@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { verifyPassword, createSessionCookie } from "@/lib/auth";
+import { createSessionCookie } from "@/lib/auth";
+import { comparePassword } from "@/lib/password";
 import { loginSchema } from "@/lib/validators";
 import { ok, fail, zodErrors } from "@/lib/api";
-import { ensureDefaultAdmin } from "@/lib/bootstrap";
 import { isExpired, type MembershipStatus } from "@/lib/membership";
+import { serializeUser } from "@/lib/serialize";
 
 export const runtime = "nodejs";
 
@@ -26,15 +27,12 @@ export async function POST(req: NextRequest) {
 
   try {
     await connectToDatabase();
-    // Make sure the default admin exists (first-run convenience).
-    await ensureDefaultAdmin();
-
     const user = await User.findOne({ email }).select("+passwordHash");
     if (!user) {
       return fail("Email atau password salah", 401);
     }
 
-    const valid = await verifyPassword(password, user.passwordHash);
+    const valid = await comparePassword(password, user.passwordHash);
     if (!valid) {
       return fail("Email atau password salah", 401);
     }
@@ -49,14 +47,12 @@ export async function POST(req: NextRequest) {
     user.lastLoginAt = new Date();
     await user.save();
 
-    await createSessionCookie({
-      sub: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
+    await createSessionCookie(user);
 
-    return ok({ redirect: user.role === "admin" ? "/admin" : "/dashboard" });
+    return ok({
+      redirect: user.role === "admin" ? "/admin" : "/dashboard",
+      user: serializeUser(user),
+    });
   } catch (error) {
     console.error("[login] error:", error);
     return fail("Terjadi kesalahan pada server", 500);

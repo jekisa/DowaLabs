@@ -1,58 +1,72 @@
-import { SignJWT, jwtVerify, type JWTPayload } from "jose";
-
-/**
- * Edge-compatible JWT helpers (used by both middleware and route handlers).
- * Uses `jose` so it runs in the Next.js Edge runtime where Node's `crypto`
- * / bcrypt are unavailable.
- */
+import jwt, { type JwtPayload } from "jsonwebtoken";
 
 export const SESSION_COOKIE = "dowalabs_session";
-export const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days (seconds)
+export const SESSION_MAX_AGE = 60 * 60 * 24 * 7;
 
 export type SessionRole = "user" | "admin";
 
-export interface SessionPayload extends JWTPayload {
-  sub: string; // user id
+export interface SessionPayload extends JwtPayload {
+  sub: string;
   email: string;
   role: SessionRole;
   name: string;
 }
 
-function getSecretKey(): Uint8Array {
+export interface TokenUser {
+  _id?: { toString(): string };
+  id?: string;
+  email: string;
+  role: SessionRole;
+  name: string;
+}
+
+function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error("JWT_SECRET is not defined.");
   }
-  return new TextEncoder().encode(secret);
+  return secret;
 }
 
-export async function signSession(
-  payload: Omit<SessionPayload, keyof JWTPayload>
-): Promise<string> {
-  return new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime(`${SESSION_MAX_AGE}s`)
-    .sign(getSecretKey());
+export function createToken(user: TokenUser): string {
+  const subject = user.id ?? user._id?.toString();
+  if (!subject) throw new Error("User id is required to create a token.");
+
+  return jwt.sign(
+    {
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    },
+    getJwtSecret(),
+    {
+      algorithm: "HS256",
+      subject,
+      expiresIn: SESSION_MAX_AGE,
+    }
+  );
 }
 
-export async function verifySession(
-  token: string | undefined | null
-): Promise<SessionPayload | null> {
+export function verifyToken(token: string | null | undefined): SessionPayload | null {
   if (!token) return null;
+
   try {
-    const { payload } = await jwtVerify(token, getSecretKey(), {
+    const payload = jwt.verify(token, getJwtSecret(), {
       algorithms: ["HS256"],
     });
+
     if (
+      typeof payload !== "string" &&
       typeof payload.sub === "string" &&
       typeof payload.email === "string" &&
+      typeof payload.name === "string" &&
       (payload.role === "user" || payload.role === "admin")
     ) {
       return payload as SessionPayload;
     }
-    return null;
   } catch {
     return null;
   }
+
+  return null;
 }

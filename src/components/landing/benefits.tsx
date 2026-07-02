@@ -1,47 +1,51 @@
 import {
-  Briefcase,
-  Clock,
-  Layers,
-  ShieldCheck,
-  Sparkles,
-  Wand2,
+  Eraser,
+  ImagePlus,
+  Layers3,
+  MessageSquareText,
 } from "lucide-react";
-import { SectionHeading } from "@/components/landing/section-heading";
-import {
-  StaggerContainer,
-  StaggerItem,
-} from "@/components/motion/motion-primitives";
-import { BENEFITS } from "@/lib/constants";
 
-const ICONS = [Sparkles, Wand2, Briefcase, Clock, Layers, ShieldCheck];
+const features = [
+  {
+    title: "AI Product Photo",
+    description: "Ubah foto biasa menjadi visual produk yang siap dipakai untuk jualan.",
+    icon: ImagePlus,
+  },
+  {
+    title: "Background Remover",
+    description: "Bersihkan latar produk agar mudah dipakai di berbagai materi promosi.",
+    icon: Eraser,
+  },
+  {
+    title: "Ganti Background",
+    description: "Tempatkan produk dalam suasana baru tanpa perlu melakukan foto ulang.",
+    icon: Layers3,
+  },
+  {
+    title: "Prompt Affiliate Siap Pakai",
+    description: "Mulai lebih cepat dengan prompt terarah untuk konten affiliate harian.",
+    icon: MessageSquareText,
+  },
+];
 
 export function Benefits() {
   return (
-    <section id="fitur" className="container py-20">
-      <SectionHeading
-        eyebrow="Benefit"
-        title="Kenapa Memilih DowaLabs?"
-        description="Tidak perlu desain dari nol. DowaLabs membantu kamu membuat tampilan produk lebih profesional, cocok untuk seller, affiliate, dan UMKM."
-      />
-
-      <StaggerContainer className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {BENEFITS.map((benefit, i) => {
-          const Icon = ICONS[i % ICONS.length];
-          return (
-            <StaggerItem key={benefit.title}>
-              <div className="glass h-full rounded-xl p-6 transition-colors hover:border-primary/30">
-                <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-primary/15 text-gold-400">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="font-semibold">{benefit.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {benefit.desc}
-                </p>
-              </div>
-            </StaggerItem>
-          );
-        })}
-      </StaggerContainer>
-    </section>
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {features.map((feature) => {
+        const Icon = feature.icon;
+        return (
+          <article
+            key={feature.title}
+            className="rounded-xl border border-white/10 bg-white/[0.03] p-4 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.05]"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-300/10 text-amber-300">
+              <Icon className="h-4 w-4" />
+            </span>
+            <h3 className="mt-4 text-sm font-semibold text-white">{feature.title}</h3>
+            <p className="mt-2 text-xs leading-5 text-slate-400">{feature.description}</p>
+          </article>
+        );
+      })}
+    </div>
   );
 }

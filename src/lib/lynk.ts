@@ -1,4 +1,5 @@
 import type { PackageName } from "@/lib/membership";
+import { normalizeWhatsapp } from "@/lib/whatsapp";
 
 /**
  * Lynk.id webhook payloads are not strongly standardized, so we defensively
@@ -46,11 +47,6 @@ function asNumber(v: unknown): number | null {
     return Number.isNaN(n) ? null : n;
   }
   return null;
-}
-
-function normalizeWhatsapp(v: string | null): string | null {
-  if (!v) return null;
-  return v.replace(/[\s\-()]/g, "") || null;
 }
 
 function guessPackage(...candidates: (string | null)[]): PackageName | null {
@@ -115,7 +111,7 @@ export function parseLynkPayload(payload: unknown): ParsedLynkPayload {
     ])
   )?.toLowerCase() ?? null;
 
-  const whatsapp = normalizeWhatsapp(
+  const whatsappValue = normalizeWhatsapp(
     asString(
       deepFind(safe, [
         "whatsapp",
@@ -130,6 +126,7 @@ export function parseLynkPayload(payload: unknown): ParsedLynkPayload {
       ])
     )
   );
+  const whatsapp = whatsappValue || null;
 
   const amount = asNumber(
     deepFind(safe, ["amount", "total", "grossAmount", "gross_amount", "price", "nominal"])
@@ -185,7 +182,9 @@ export function verifyWebhookSecret(
   payload: unknown
 ): boolean {
   const expected = process.env.LYNK_WEBHOOK_SECRET;
-  if (!expected) return true; // No secret configured -> accept (still logged).
+  // TODO: Replace this comparison with Lynk's documented signature algorithm
+  // when official signature details are available.
+  if (!expected) return true;
 
   const headerSecret =
     headers.get("x-lynk-signature") ||

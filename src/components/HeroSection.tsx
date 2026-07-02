@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const benefits = ["Tanpa skill desain", "100+ prompt produk", "Siap untuk marketplace"];
+const benefits = ["Tanpa skill desain", "5.000 prompt produk", "Siap untuk marketplace"];
 
 export function HeroSection() {
   return (
@@ -133,7 +133,7 @@ export function HeroSection() {
 
               <div className="relative aspect-[5/4] min-h-[310px] overflow-hidden rounded-[8px] border border-white/10 bg-[#090c17] sm:min-h-0">
                 <Image
-                  src="/images/dowalabs-product-studio.png"
+                  src="/images/showcase/tshirt-after4.jpg"
                   alt="Contoh foto produk premium hasil DowaLabs AI Product Studio"
                   fill
                   priority

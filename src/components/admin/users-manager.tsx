@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Pencil, Search, ShieldBan, Zap } from "lucide-react";
+import { Loader2, Pencil, Search, ShieldBan, SlidersHorizontal, UserRound, Zap } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -60,7 +60,7 @@ const STATUSES: MembershipStatus[] = [
 
 interface EditState {
   membershipStatus: MembershipStatus;
-  packageName: "basic" | "pro" | "none";
+  packageName: "pro";
   role: "user" | "admin";
   membershipStart: string;
   membershipEnd: string;
@@ -96,7 +96,7 @@ export function UsersManager({
     setEditing(user);
     setEdit({
       membershipStatus: user.membershipStatus,
-      packageName: user.packageName ?? "none",
+      packageName: "pro",
       role: user.role,
       membershipStart: toLocalInput(user.membershipStart),
       membershipEnd: toLocalInput(user.membershipEnd),
@@ -126,7 +126,7 @@ export function UsersManager({
     try {
       const updated = await patchUser(editing.id, {
         membershipStatus: edit.membershipStatus,
-        packageName: edit.packageName === "none" ? null : edit.packageName,
+        packageName: edit.packageName,
         role: edit.role,
         membershipStart: localInputToISO(edit.membershipStart),
         membershipEnd: localInputToISO(edit.membershipEnd),
@@ -149,7 +149,7 @@ export function UsersManager({
         membershipStatus: "active",
         membershipStart: now.toISOString(),
         membershipEnd: end.toISOString(),
-        packageName: user.packageName ?? "basic",
+        packageName: "pro",
       });
       applyUpdate(updated);
       toast.success(`${user.name} diaktifkan 30 hari`);
@@ -171,20 +171,20 @@ export function UsersManager({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Controls */}
-      <div className="flex flex-col gap-3 sm:flex-row">
+      <div className="flex flex-col gap-3 rounded-[24px] border border-white/[0.06] bg-white/[0.028] p-4 shadow-[0_20px_60px_rgba(0,0,0,0.18)] sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
           <Input
             placeholder="Cari nama, email, atau WhatsApp..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
+            className="h-12 rounded-2xl border-white/[0.07] bg-black/10 pl-11 focus-visible:ring-amber-300/40"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="sm:w-48">
+          <SelectTrigger className="h-12 rounded-2xl border-white/[0.07] bg-black/10 sm:w-52">
             <SelectValue placeholder="Filter status" />
           </SelectTrigger>
           <SelectContent>
@@ -196,13 +196,17 @@ export function UsersManager({
             ))}
           </SelectContent>
         </Select>
+        <div className="flex h-12 items-center gap-2 rounded-2xl border border-white/[0.06] bg-black/10 px-4 text-xs text-slate-500">
+          <SlidersHorizontal className="h-4 w-4 text-amber-300" />
+          {filtered.length} dari {users.length} user
+        </div>
       </div>
 
       {/* Table */}
-      <div className="glass rounded-xl">
+      <div className="overflow-x-auto rounded-[24px] border border-white/[0.06] bg-white/[0.028] shadow-[0_24px_70px_rgba(0,0,0,0.2)] backdrop-blur-xl">
         <Table>
-          <TableHeader>
-            <TableRow>
+          <TableHeader className="bg-white/[0.018]">
+            <TableRow className="border-white/[0.06] hover:bg-transparent">
               <TableHead>Nama / Email</TableHead>
               <TableHead>WhatsApp</TableHead>
               <TableHead>Paket</TableHead>
@@ -220,21 +224,24 @@ export function UsersManager({
               </TableRow>
             ) : (
               filtered.map((u) => (
-                <TableRow key={u.id}>
+                <TableRow key={u.id} className="border-white/[0.05] transition-colors hover:bg-white/[0.025]">
                   <TableCell>
-                    <div className="font-medium">{u.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {u.email}
-                      {u.role === "admin" && (
-                        <span className="ml-2 rounded bg-primary/15 px-1.5 py-0.5 text-gold-400">
-                          admin
-                        </span>
-                      )}
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-white/[0.06] bg-white/[0.04] text-slate-400"><UserRound className="h-4 w-4" /></span>
+                      <div>
+                        <div className="font-medium text-slate-200">{u.name}</div>
+                        <div className="mt-0.5 text-xs text-slate-600">
+                          {u.email}
+                          {u.role === "admin" && (
+                            <span className="ml-2 rounded-full bg-amber-300/10 px-2 py-0.5 text-amber-300">admin</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell className="text-sm">{u.whatsapp}</TableCell>
                   <TableCell className="text-sm capitalize">
-                    {u.packageName ?? "-"}
+                    Pro
                   </TableCell>
                   <TableCell>
                     <MembershipBadge status={u.membershipStatus} />
@@ -243,11 +250,13 @@ export function UsersManager({
                     {formatDate(u.membershipEnd)}
                   </TableCell>
                   <TableCell>
-                    <div className="flex justify-end gap-1">
+                    <div className="flex justify-end gap-1.5">
                       <Button
                         size="icon"
                         variant="ghost"
                         title="Aktifkan 30 hari"
+                        aria-label={`Aktifkan ${u.name} selama 30 hari`}
+                        className="rounded-xl border border-transparent text-slate-500 hover:border-emerald-400/15 hover:bg-emerald-400/[0.08] hover:text-emerald-300"
                         onClick={() => quickActivate(u)}
                       >
                         <Zap className="h-4 w-4" />
@@ -256,6 +265,8 @@ export function UsersManager({
                         size="icon"
                         variant="ghost"
                         title="Blokir"
+                        aria-label={`Blokir ${u.name}`}
+                        className="rounded-xl border border-transparent text-slate-500 hover:border-red-400/15 hover:bg-red-400/[0.08] hover:text-red-300"
                         onClick={() => blockUser(u)}
                       >
                         <ShieldBan className="h-4 w-4" />
@@ -264,6 +275,8 @@ export function UsersManager({
                         size="icon"
                         variant="ghost"
                         title="Edit"
+                        aria-label={`Edit ${u.name}`}
+                        className="rounded-xl border border-transparent text-slate-500 hover:border-amber-300/15 hover:bg-amber-300/[0.08] hover:text-amber-300"
                         onClick={() => openEdit(u)}
                       >
                         <Pencil className="h-4 w-4" />
@@ -284,7 +297,7 @@ export function UsersManager({
           if (!o) setEditing(null);
         }}
       >
-        <DialogContent>
+        <DialogContent className="max-w-xl rounded-[24px] border-white/[0.08] bg-[#0b0f1b] p-7">
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
             <DialogDescription>
@@ -293,8 +306,8 @@ export function UsersManager({
           </DialogHeader>
 
           {edit && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-5">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Status</Label>
                   <Select
@@ -303,7 +316,7 @@ export function UsersManager({
                       setEdit({ ...edit, membershipStatus: v as MembershipStatus })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-xl bg-black/15">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -326,12 +339,10 @@ export function UsersManager({
                       })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="h-11 rounded-xl bg-black/15">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">Tidak ada</SelectItem>
-                      <SelectItem value="basic">Basic</SelectItem>
                       <SelectItem value="pro">Pro</SelectItem>
                     </SelectContent>
                   </Select>
@@ -346,7 +357,7 @@ export function UsersManager({
                     setEdit({ ...edit, role: v as "user" | "admin" })
                   }
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="h-11 rounded-xl bg-black/15">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -356,11 +367,12 @@ export function UsersManager({
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Mulai</Label>
                   <Input
                     type="datetime-local"
+                    className="rounded-xl bg-black/15"
                     value={edit.membershipStart}
                     onChange={(e) =>
                       setEdit({ ...edit, membershipStart: e.target.value })
@@ -371,6 +383,7 @@ export function UsersManager({
                   <Label>Berakhir</Label>
                   <Input
                     type="datetime-local"
+                    className="rounded-xl bg-black/15"
                     value={edit.membershipEnd}
                     onChange={(e) =>
                       setEdit({ ...edit, membershipEnd: e.target.value })

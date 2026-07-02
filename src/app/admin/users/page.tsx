@@ -2,6 +2,8 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
 import { serializeUser } from "@/lib/serialize";
 import { UsersManager } from "@/components/admin/users-manager";
+import { AdminPageHeader } from "@/components/admin/admin-page-header";
+import { Users } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -11,13 +13,8 @@ export default async function AdminUsersPage() {
   const data = users.map(serializeUser);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">User Management</h1>
-        <p className="text-sm text-muted-foreground">
-          Kelola status membership, paket, dan masa aktif user.
-        </p>
-      </div>
+    <div className="space-y-8">
+      <AdminPageHeader eyebrow="Member directory" title="User Management" description="Kelola role, status membership, paket, dan masa aktif seluruh user." icon={Users} />
       <UsersManager initialUsers={data} />
     </div>
   );

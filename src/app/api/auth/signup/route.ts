@@ -1,9 +1,11 @@
 import { NextRequest } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { hashPassword, createSessionCookie } from "@/lib/auth";
+import { createSessionCookie } from "@/lib/auth";
+import { hashPassword } from "@/lib/password";
 import { signupSchema } from "@/lib/validators";
 import { ok, fail, zodErrors } from "@/lib/api";
+import { serializeUser } from "@/lib/serialize";
 
 export const runtime = "nodejs";
 
@@ -20,7 +22,7 @@ export async function POST(req: NextRequest) {
     return fail("Data tidak valid", 422, zodErrors(parsed.error));
   }
 
-  const { name, email, whatsapp, password, packageName } = parsed.data;
+  const { name, email, whatsapp, password } = parsed.data;
 
   try {
     await connectToDatabase();
@@ -37,18 +39,37 @@ export async function POST(req: NextRequest) {
       passwordHash: await hashPassword(password),
       role: "user",
       membershipStatus: "pending",
-      packageName,
+      packageName: "pro",
+      membershipStart: null,
+      membershipEnd: null,
     });
 
-    await createSessionCookie({
-      sub: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
+    await createSessionCookie(user);
 
-    return ok({ redirect: "/payment", userId: user._id.toString() });
+    return ok({
+      message: "Signup berhasil. Silakan buat invoice transfer bank.",
+      redirect: "/payment",
+      user: serializeUser(user),
+    });
   } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === 11000
+    ) {
+      const duplicate = error as {
+        keyPattern?: Record<string, number>;
+      };
+      const field = Object.keys(duplicate.keyPattern ?? {})[0];
+      if (field === "email") {
+        return fail("Email sudah terdaftar. Silakan login.", 409);
+      }
+      return fail(
+        `Data gagal disimpan karena nilai duplikat${field ? ` pada field ${field}` : ""}.`,
+        409
+      );
+    }
     console.error("[signup] error:", error);
     return fail("Terjadi kesalahan pada server", 500);
   }

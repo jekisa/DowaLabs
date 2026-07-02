@@ -27,11 +27,22 @@ export function BeforeAfter() {
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="grid items-center gap-3 lg:grid-cols-[1fr_48px_1fr]"
         >
-          <VisualCard label="Foto Biasa" badge="RAW UPLOAD" icon={Camera} muted />
+          <VisualCard
+            label="Foto Awal"
+            badge="RAW UPLOAD"
+            icon={Camera}
+            imageSrc="/images/showcase/tshirt-before.jpg"
+            muted
+          />
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-amber-300/20 bg-amber-300/[0.08] text-amber-300 shadow-[0_0_30px_rgba(245,185,66,0.12)]">
             <ArrowDown className="h-5 w-5 lg:-rotate-90" />
           </div>
-          <VisualCard label="Foto Siap Jual" badge="AI ENHANCED" icon={WandSparkles} />
+          <VisualCard
+            label="Hasil Siap Jual"
+            badge="AI ENHANCED"
+            icon={WandSparkles}
+            imageSrc="/images/showcase/tshirt-after4.jpg"
+          />
         </motion.div>
       </div>
     </section>
@@ -42,27 +53,29 @@ function VisualCard({
   label,
   badge,
   icon: Icon,
+  imageSrc,
   muted,
 }: {
   label: string;
   badge: string;
   icon: typeof Camera;
+  imageSrc: string;
   muted?: boolean;
 }) {
   return (
-    <div className="glass-panel overflow-hidden rounded-[8px] p-2 sm:p-3">
-      <div className="relative aspect-[4/3] min-h-[260px] overflow-hidden rounded-[8px] bg-[#0a0c13]">
+    <div className="glass-panel overflow-hidden rounded-xl p-2 sm:p-3">
+      <div className="relative aspect-[4/3] min-h-[260px] overflow-hidden rounded-xl border border-white/10 bg-black/20">
         <Image
-          src="/images/dowalabs-product-studio.png"
+          src={imageSrc}
           alt={muted ? "Foto produk sebelum diproses" : "Foto produk premium siap jual"}
           fill
           sizes="(max-width: 1024px) 94vw, 550px"
-          className={muted ? "object-cover grayscale brightness-[0.48] contrast-75" : "object-cover"}
+          className="object-contain"
         />
         <div
           className={
             muted
-              ? "absolute inset-0 bg-slate-950/35"
+              ? "absolute inset-0 bg-slate-950/10"
               : "absolute inset-0 bg-gradient-to-t from-[#05060b]/65 via-transparent to-transparent"
           }
         />

@@ -30,7 +30,7 @@ interface PaymentRow {
   amount: number | null;
   status: string;
   processed: boolean;
-  processingError: string | null;
+  processingNote: string | null;
   rawPayload: Record<string, unknown>;
   createdAt: string | null;
 }
@@ -90,7 +90,7 @@ export function PaymentsTable({ payments }: { payments: PaymentRow[] }) {
                       <Badge variant="success">processed</Badge>
                     ) : (
                       <Badge variant="warning">
-                        {p.processingError || "unprocessed"}
+                        {p.processingNote || "unprocessed"}
                       </Badge>
                     )}
                   </TableCell>

@@ -18,11 +18,11 @@ const items = [
   },
   {
     q: "Apakah akun langsung aktif?",
-    a: "Untuk frontend dummy ini status ditampilkan sebagai simulasi. Pada backend nanti akun akan aktif via webhook Lynk atau aktivasi admin.",
+    a: "Unggah bukti transfer pada halaman pembayaran. Admin akan memeriksa bukti dan mengaktifkan subscription setelah transfer terverifikasi.",
   },
   {
     q: "Kalau pembayaran belum aktif bagaimana?",
-    a: "Gunakan tombol Chat Admin WhatsApp di halaman payment dan kirim bukti pembayaran untuk pengecekan manual.",
+    a: "Buka halaman Transfer Bank, pilih invoice yang ditolak, baca catatan admin, lalu unggah bukti yang benar.",
   },
   {
     q: "Apakah bisa dipakai untuk Shopee affiliate?",
