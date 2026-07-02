@@ -5,7 +5,7 @@ import { BadgeCheck } from "lucide-react";
 
 const stats = [
   { value: "5.000+", label: "target kontak WA siap dipasarkan" },
-  { value: "100+", label: "prompt produk siap digunakan" },
+  { value: "5.000", label: "prompt produk siap digunakan" },
   { value: "24/7", label: "akses dashboard membership" },
   { value: "Affiliate", label: "dibuat untuk kebutuhan marketplace" },
 ];

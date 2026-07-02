@@ -1,29 +1,20 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, verifySession } from "@/lib/jwt";
 
-const ADMIN_PREFIX = "/admin";
+const SESSION_COOKIE = "dowalabs_session";
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+export function middleware(req: NextRequest) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
-  const session = await verifySession(token);
-
-  const isAdminRoute = pathname.startsWith(ADMIN_PREFIX);
-
-  if (isAdminRoute) {
-    if (!session) {
-      const url = new URL("/login", req.url);
-      url.searchParams.set("from", pathname);
-      return NextResponse.redirect(url);
-    }
-    if (session.role !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
+  if (!token) {
+    const loginUrl = new URL("/login", req.url);
+    loginUrl.searchParams.set("from", req.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
+  // JWT validity and the admin role are checked again in the server layouts
+  // and route handlers, where MongoDB and jsonwebtoken are available.
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/dashboard/:path*", "/payment/:path*", "/admin/:path*"],
 };

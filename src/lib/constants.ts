@@ -15,23 +15,23 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Bagaimana cara mulai menggunakan DowaLabs?",
-    a: "Daftar akun, pilih paket Basic atau Pro, lakukan pembayaran via Lynk.id, lalu login ke dashboard dan klik tombol Buka DowaLabs AI Canvas.",
+    a: "Daftar akun, aktifkan paket Pro, buat invoice, transfer ke rekening perusahaan, lalu unggah bukti pembayaran untuk diverifikasi admin.",
   },
   {
     q: "Apakah akses langsung aktif setelah bayar?",
-    a: "Jika webhook pembayaran berhasil, akun akan aktif otomatis. Jika belum aktif dalam beberapa menit, kirim bukti pembayaran ke WhatsApp admin untuk aktivasi manual.",
+    a: "Setelah bukti transfer diunggah, admin akan memverifikasi pembayaran. Akses aktif segera setelah pembayaran disetujui.",
   },
   {
     q: "Berapa lama masa aktif membership?",
     a: "Setiap pembayaran memberikan akses selama 30 hari. Kamu bisa memperpanjang kapan saja sebelum atau setelah masa aktif berakhir.",
   },
   {
-    q: "Apa perbedaan paket Basic dan Pro?",
-    a: "Basic memberikan akses dashboard, AI Canvas, dan tutorial dasar. Pro menambahkan akses prompt premium, template/preset tambahan, dan prioritas update.",
+    q: "Apa yang didapat dari paket Pro?",
+    a: "Paket Pro memberi akses dashboard, seluruh AI Canvas, 5.000 prompt produk, template premium, tutorial, dan prioritas update selama 30 hari.",
   },
   {
     q: "Metode pembayaran apa yang didukung?",
-    a: "Saat ini pembayaran dilakukan melalui Lynk.id yang mendukung berbagai metode seperti transfer bank, e-wallet, dan QRIS.",
+    a: "Pembayaran dilakukan melalui transfer manual ke rekening perusahaan yang tercantum pada invoice.",
   },
   {
     q: "Apakah data saya aman?",
@@ -47,8 +47,8 @@ export const HOW_IT_WORKS = [
   },
   {
     step: "02",
-    title: "Pilih paket dan bayar",
-    desc: "Pilih Basic atau Pro, lalu selesaikan pembayaran via Lynk.id.",
+    title: "Aktifkan Pro dan bayar",
+    desc: "Buat invoice Pro Rp30.000, lalu transfer ke rekening perusahaan.",
   },
   {
     step: "03",
@@ -86,7 +86,7 @@ export const BENEFITS = [
   },
   {
     title: "Prompt & Preset Premium",
-    desc: "Paket Pro memberi akses prompt dan preset siap pakai untuk hasil maksimal.",
+    desc: "Paket Pro memberi akses 5.000 prompt dan preset siap pakai untuk hasil maksimal.",
   },
   {
     title: "Akses Terkontrol & Aman",

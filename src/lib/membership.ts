@@ -2,22 +2,13 @@ export type MembershipStatus = "pending" | "active" | "expired" | "blocked";
 export type PackageName = "basic" | "pro";
 
 export const MEMBERSHIP_DAYS = 30;
+export const PRO_PRICE = 30_000;
 
-/** Accepted Lynk payment statuses that count as a successful payment. */
-export const SUCCESS_STATUSES = [
-  "paid",
-  "success",
-  "successful",
-  "completed",
-  "complete",
-  "settled",
-  "checkout_success",
-  "payment_success",
-];
-
-export function isSuccessStatus(status: string | null | undefined): boolean {
-  if (!status) return false;
-  return SUCCESS_STATUSES.includes(status.toString().trim().toLowerCase());
+/** Normalize common provider statuses that mean a payment has settled. */
+export function isSuccessStatus(status: string): boolean {
+  return ["paid", "success", "successful", "settled", "completed", "complete"].includes(
+    status.trim().toLowerCase()
+  );
 }
 
 function addDays(date: Date, days: number): Date {
@@ -49,7 +40,7 @@ export function isExpired(
   now: Date = new Date()
 ): boolean {
   if (status !== "active") return false;
-  if (!membershipEnd) return false;
+  if (!membershipEnd) return true;
   return membershipEnd.getTime() < now.getTime();
 }
 
@@ -70,7 +61,11 @@ export function canAccessCanvas(
   membershipEnd: Date | null | undefined,
   now: Date = new Date()
 ): boolean {
-  return status === "active" && !isExpired(status, membershipEnd, now);
+  return Boolean(
+    status === "active" &&
+      membershipEnd &&
+      !isExpired(status, membershipEnd, now)
+  );
 }
 
 export const STATUS_LABELS: Record<MembershipStatus, string> = {

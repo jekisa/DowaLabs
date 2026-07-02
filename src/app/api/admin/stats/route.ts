@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { PaymentLog } from "@/models/PaymentLog";
+import { ManualPayment } from "@/models/ManualPayment";
 import { requireAdmin } from "@/lib/server-auth";
 import { ok, fail } from "@/lib/api";
 
@@ -20,8 +20,8 @@ export async function GET() {
         User.countDocuments({ membershipStatus: "pending" }),
         User.countDocuments({ membershipStatus: "expired" }),
         User.countDocuments({ membershipStatus: "blocked" }),
-        PaymentLog.countDocuments({}),
-        PaymentLog.countDocuments({ processed: false }),
+        ManualPayment.countDocuments({}),
+        ManualPayment.countDocuments({ status: "waiting_verification" }),
       ]);
 
     return ok({

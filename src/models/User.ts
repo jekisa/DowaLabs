@@ -9,7 +9,7 @@ export interface IUser {
   passwordHash: string;
   role: "user" | "admin";
   membershipStatus: MembershipStatus;
-  packageName: PackageName | null;
+  packageName: PackageName;
   membershipStart: Date | null;
   membershipEnd: Date | null;
   lastLoginAt: Date | null;
@@ -44,8 +44,9 @@ const UserSchema = new Schema<IUser>(
     },
     packageName: {
       type: String,
-      enum: ["basic", "pro", null],
-      default: null,
+      enum: ["basic", "pro"],
+      default: "pro",
+      required: true,
     },
     membershipStart: { type: Date, default: null },
     membershipEnd: { type: Date, default: null },

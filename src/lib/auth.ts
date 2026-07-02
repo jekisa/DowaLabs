@@ -1,32 +1,25 @@
-import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { connectToDatabase } from "@/lib/mongodb";
+import { isExpired, type MembershipStatus } from "@/lib/membership";
 import {
+  createToken,
+  verifyToken,
   SESSION_COOKIE,
   SESSION_MAX_AGE,
-  signSession,
-  verifySession,
   type SessionPayload,
+  type TokenUser,
 } from "@/lib/jwt";
+import { User, type IUser } from "@/models/User";
 
-const SALT_ROUNDS = 12;
+export { createToken, verifyToken };
 
-export async function hashPassword(plain: string): Promise<string> {
-  return bcrypt.hash(plain, SALT_ROUNDS);
+export interface AuthResult {
+  user: IUser | null;
+  error?: "UNAUTHENTICATED" | "FORBIDDEN";
 }
 
-export async function verifyPassword(
-  plain: string,
-  hash: string
-): Promise<boolean> {
-  if (!hash) return false;
-  return bcrypt.compare(plain, hash);
-}
-
-/** Write the signed session JWT into an httpOnly cookie. */
-export async function createSessionCookie(
-  payload: Omit<SessionPayload, "iat" | "exp" | "nbf" | "aud" | "iss" | "jti">
-): Promise<void> {
-  const token = await signSession(payload);
+export async function setSessionCookie(user: TokenUser): Promise<void> {
+  const token = createToken(user);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, token, {
     httpOnly: true,
@@ -37,6 +30,8 @@ export async function createSessionCookie(
   });
 }
 
+export const createSessionCookie = setSessionCookie;
+
 export async function clearSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE, "", {
@@ -44,13 +39,42 @@ export async function clearSessionCookie(): Promise<void> {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
+    expires: new Date(0),
     maxAge: 0,
   });
 }
 
-/** Read & verify the current session from the request cookies (server side). */
 export async function getSession(): Promise<SessionPayload | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  return verifySession(token);
+  return verifyToken(cookieStore.get(SESSION_COOKIE)?.value);
+}
+
+export async function getCurrentUser(): Promise<IUser | null> {
+  const session = await getSession();
+  if (!session?.sub) return null;
+
+  await connectToDatabase();
+  const user = await User.findById(session.sub);
+  if (!user) return null;
+
+  if (isExpired(user.membershipStatus as MembershipStatus, user.membershipEnd)) {
+    user.membershipStatus = "expired";
+    await user.save();
+  }
+
+  return user;
+}
+
+export async function requireAuth(): Promise<AuthResult> {
+  const user = await getCurrentUser();
+  return user ? { user } : { user: null, error: "UNAUTHENTICATED" };
+}
+
+export const requireUser = requireAuth;
+
+export async function requireAdmin(): Promise<AuthResult> {
+  const user = await getCurrentUser();
+  if (!user) return { user: null, error: "UNAUTHENTICATED" };
+  if (user.role !== "admin") return { user: null, error: "FORBIDDEN" };
+  return { user };
 }

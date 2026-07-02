@@ -1,102 +1,59 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { SectionHeading } from "@/components/landing/section-heading";
-import { formatIDR } from "@/lib/utils";
 
-const BASIC_FEATURES = [
-  "Akses dashboard member",
-  "Akses DowaLabs AI Canvas",
-  "Akses tutorial dasar",
-  "Masa aktif 30 hari",
-];
-
-const PRO_FEATURES = [
-  "Semua fitur Basic",
-  "Akses prompt premium",
-  "Template & preset tambahan",
+const benefits = [
+  "Akses semua tool DowaLabs Canvas",
+  "5.000 prompt produk siap pakai",
+  "Template affiliate premium",
+  "Tutorial penggunaan",
   "Prioritas update",
-  "Masa aktif 30 hari",
 ];
 
-export function Pricing({
-  basicPrice = 19000,
-  proPrice = 35000,
-  withHeading = true,
-}: {
-  basicPrice?: number;
-  proPrice?: number;
-  withHeading?: boolean;
-}) {
+export function Pricing({ embedded = false }: { embedded?: boolean }) {
+  const card = (
+    <div className="mx-auto grid max-w-4xl gap-5 rounded-2xl border border-amber-300/25 bg-gradient-to-br from-amber-300/[0.09] via-white/[0.035] to-indigo-500/[0.07] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.25)] sm:p-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+      <div>
+        <div className="inline-flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-300/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-200">
+          <Sparkles className="h-3 w-3" /> Paket Pro
+        </div>
+        <div className="mt-4 flex items-end gap-2">
+          <span className="text-3xl font-semibold text-white sm:text-4xl">Rp30.000</span>
+          <span className="pb-1 text-sm text-slate-400">/ bulan</span>
+        </div>
+        <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
+          Satu paket lengkap untuk membuat visual produk affiliate yang lebih siap jual.
+        </p>
+        <Button asChild size="lg" className="mt-5 w-full sm:w-auto">
+          <Link href="/signup">Mulai dengan Pro</Link>
+        </Button>
+      </div>
+
+      <ul className="grid gap-2.5 rounded-xl border border-white/10 bg-black/15 p-4 sm:grid-cols-2">
+        {benefits.map((benefit) => (
+          <li key={benefit} className="flex items-start gap-2 text-xs leading-5 text-slate-300 sm:text-sm">
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+            {benefit}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+  if (embedded) {
+    return card;
+  }
+
   return (
-    <section id="pricing" className="container py-20">
-      {withHeading && (
-        <SectionHeading
-          eyebrow="Harga"
-          title="Pilih Paket yang Sesuai"
-          description="Mulai dari harga terjangkau. Upgrade kapan saja sesuai kebutuhan jualan kamu."
-        />
-      )}
-
-      <div className="mx-auto mt-12 grid max-w-4xl gap-6 md:grid-cols-2">
-        {/* Basic */}
-        <motion.div
-          whileHover={{ y: -6 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="glass flex flex-col rounded-2xl p-8"
-        >
-          <h3 className="text-xl font-semibold">Basic</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Untuk yang baru mulai jualan online.
-          </p>
-          <div className="mt-6 flex items-end gap-1">
-            <span className="text-4xl font-bold">{formatIDR(basicPrice)}</span>
-            <span className="mb-1 text-sm text-muted-foreground">/bulan</span>
-          </div>
-          <ul className="mt-6 flex-1 space-y-3 text-sm">
-            {BASIC_FEATURES.map((f) => (
-              <li key={f} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-gold-400" /> {f}
-              </li>
-            ))}
-          </ul>
-          <Button asChild variant="outline" className="mt-8">
-            <Link href="/signup?package=basic">Pilih Basic</Link>
-          </Button>
-        </motion.div>
-
-        {/* Pro */}
-        <motion.div
-          whileHover={{ y: -6 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="relative flex flex-col rounded-2xl border border-primary/40 bg-gradient-to-b from-primary/10 to-card p-8 shadow-lg shadow-primary/10"
-        >
-          <Badge className="absolute right-6 top-6">Paling Populer</Badge>
-          <h3 className="text-xl font-semibold">Pro</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Untuk seller serius yang ingin hasil maksimal.
-          </p>
-          <div className="mt-6 flex items-end gap-1">
-            <span className="text-4xl font-bold text-gradient-gold">
-              {formatIDR(proPrice)}
-            </span>
-            <span className="mb-1 text-sm text-muted-foreground">/bulan</span>
-          </div>
-          <ul className="mt-6 flex-1 space-y-3 text-sm">
-            {PRO_FEATURES.map((f) => (
-              <li key={f} className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-gold-400" /> {f}
-              </li>
-            ))}
-          </ul>
-          <Button asChild className="mt-8">
-            <Link href="/signup?package=pro">Pilih Pro</Link>
-          </Button>
-        </motion.div>
+    <section id="pricing" className="border-y border-white/[0.06] bg-[#070810] py-12 sm:py-14">
+      <div className="container">
+        <div className="mx-auto mb-7 max-w-2xl text-center">
+          <p className="eyebrow">Harga sederhana</p>
+          <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">Semua tool dalam satu paket</h2>
+        </div>
+        {card}
       </div>
     </section>
   );

@@ -6,12 +6,14 @@ export function json<T>(data: T, init?: ResponseInit) {
 }
 
 export function ok<T>(data: T) {
-  return NextResponse.json({ ok: true, data });
+  const fields =
+    typeof data === "object" && data !== null ? data : { value: data };
+  return NextResponse.json({ success: true, ok: true, ...fields, data });
 }
 
 export function fail(message: string, status = 400, extra?: unknown) {
   return NextResponse.json(
-    { ok: false, error: message, details: extra },
+    { success: false, ok: false, error: message, details: extra },
     { status }
   );
 }

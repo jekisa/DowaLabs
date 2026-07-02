@@ -1,5 +1,4 @@
 import type { IUser } from "@/models/User";
-import type { IPaymentLog } from "@/models/PaymentLog";
 import type { IAppSettings } from "@/models/AppSettings";
 import {
   canAccessCanvas,
@@ -14,7 +13,7 @@ export interface PublicUser {
   whatsapp: string;
   role: "user" | "admin";
   membershipStatus: MembershipStatus;
-  packageName: "basic" | "pro" | null;
+  packageName: "basic" | "pro";
   membershipStart: string | null;
   membershipEnd: string | null;
   lastLoginAt: string | null;
@@ -31,7 +30,8 @@ export function serializeUser(user: IUser): PublicUser {
     whatsapp: user.whatsapp,
     role: user.role,
     membershipStatus: user.membershipStatus as MembershipStatus,
-    packageName: user.packageName,
+    // Legacy Basic records are presented as Pro now that Pro is the only plan.
+    packageName: "pro",
     membershipStart: user.membershipStart?.toISOString() ?? null,
     membershipEnd: user.membershipEnd?.toISOString() ?? null,
     lastLoginAt: user.lastLoginAt?.toISOString() ?? null,
@@ -44,34 +44,20 @@ export function serializeUser(user: IUser): PublicUser {
   };
 }
 
-export function serializePaymentLog(log: IPaymentLog) {
-  return {
-    id: log._id.toString(),
-    provider: log.provider,
-    userId: log.userId ? log.userId.toString() : null,
-    orderId: log.orderId,
-    transactionId: log.transactionId,
-    email: log.email,
-    whatsapp: log.whatsapp,
-    amount: log.amount,
-    currency: log.currency,
-    packageName: log.packageName,
-    status: log.status,
-    processed: log.processed,
-    processingError: log.processingError,
-    rawPayload: log.rawPayload,
-    createdAt: log.createdAt?.toISOString() ?? null,
-  };
-}
-
 export function serializeSettings(settings: IAppSettings) {
   return {
     canvasUrl: settings.canvasUrl,
-    lynkBasicUrl: settings.lynkBasicUrl,
-    lynkProUrl: settings.lynkProUrl,
+    backgroundRemoverUrl: settings.backgroundRemoverUrl || "",
+    colorGradingUrl: settings.colorGradingUrl || "",
+    portraitStyleUrl: settings.portraitStyleUrl || "",
+    promptAiUrl: settings.promptAiUrl || "",
     adminWhatsapp: settings.adminWhatsapp,
-    basicPrice: settings.basicPrice,
     proPrice: settings.proPrice,
+    bankName: settings.bankName || process.env.BANK_NAME || "",
+    bankAccountNumber:
+      settings.bankAccountNumber || process.env.BANK_ACCOUNT_NUMBER || "",
+    bankAccountHolder:
+      settings.bankAccountHolder || process.env.BANK_ACCOUNT_HOLDER || "",
     updatedAt: settings.updatedAt?.toISOString() ?? null,
   };
 }

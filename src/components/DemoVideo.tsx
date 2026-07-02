@@ -1,29 +1,39 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Play, Sparkles, WandSparkles } from "lucide-react";
+import { Play, WandSparkles } from "lucide-react";
+
+type DemoClip = {
+  title: string;
+  duration: string;
+  src: string;
+  cover: string;
+};
+
+const DEMO_CLIPS: DemoClip[] = [
+  {
+    title: "Product Studio",
+    duration: "00:18",
+    src: "/videos/demo-1.mp4",
+    cover: "/images/showcase/kacang-after1.jpg",
+  },
+  {
+    title: "Lifestyle Campaign",
+    duration: "00:12",
+    src: "/videos/demo-2.mp4",
+    cover: "/images/showcase/tshirt-after3.jpg",
+  },
+  {
+    title: "Background & Color",
+    duration: "00:10",
+    src: "/videos/demo-3.mp4",
+    cover: "/images/showcase/kopi-after1.jpg",
+  },
+];
 
 export function DemoVideo() {
-  const [videoReady, setVideoReady] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-
-    fetch("/demo.mp4", { method: "HEAD" })
-      .then((response) => {
-        if (active && response.ok) setVideoReady(true);
-      })
-      .catch(() => {
-        // The visual fallback is already rendered while the demo file is unavailable.
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
   return (
     <section id="demo" className="section-glow relative overflow-hidden py-20 sm:py-24">
       <div className="container">
@@ -37,63 +47,79 @@ export function DemoVideo() {
           </p>
         </div>
 
-        <motion.div
-          initial={{ y: 28 }}
-          whileInView={{ y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-          className="glass-panel mx-auto max-w-5xl overflow-hidden rounded-[8px] p-2 sm:p-3"
-        >
-          <div className="flex h-10 items-center justify-between border-b border-white/[0.08] px-2 sm:px-3">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <WandSparkles className="h-3.5 w-3.5 text-amber-300" />
-              Product Studio walkthrough
-            </div>
-            <span className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] text-slate-400">
-              01:24
-            </span>
-          </div>
-
-          <div className="relative mt-2 aspect-video min-h-[230px] overflow-hidden rounded-[8px] bg-[#090c17] sm:mt-3">
-            {videoReady ? (
-              <video
-                className="h-full w-full object-cover"
-                src="/demo.mp4"
-                controls
-                preload="metadata"
-                onError={() => setVideoReady(false)}
-              />
-            ) : (
-              <>
-                <Image
-                  src="/images/dowalabs-product-studio.png"
-                  alt="Preview demo DowaLabs Canvas"
-                  fill
-                  sizes="(max-width: 1024px) 94vw, 960px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-[#05060b]/45" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#05060b]/80 via-transparent to-[#05060b]/20" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <motion.div
-                      className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-amber-200/40 bg-amber-300/15 text-amber-100 shadow-[0_0_45px_rgba(245,185,66,0.22)] backdrop-blur-md sm:h-20 sm:w-20"
-                      animate={{ scale: [1, 1.06, 1] }}
-                      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <Play className="ml-1 h-7 w-7 fill-current sm:h-8 sm:w-8" />
-                    </motion.div>
-                    <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/35 px-4 py-2 text-xs text-slate-100 backdrop-blur-md sm:text-sm">
-                      <Sparkles className="h-4 w-4 text-amber-300" />
-                      Preview DowaLabs Canvas
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </motion.div>
+        <div className="mx-auto grid max-w-5xl grid-cols-1 justify-items-center gap-6 sm:grid-cols-3">
+          {DEMO_CLIPS.map((clip, index) => (
+            <DemoClipCard key={clip.src} clip={clip} index={index} />
+          ))}
+        </div>
       </div>
     </section>
+  );
+}
+
+function DemoClipCard({ clip, index }: { clip: DemoClip; index: number }) {
+  const [playing, setPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  function handlePlay() {
+    setPlaying(true);
+    // Tunggu video ter-render lalu putar.
+    requestAnimationFrame(() => {
+      videoRef.current?.play().catch(() => {
+        // Autoplay bisa diblokir browser; user tetap bisa pakai kontrol.
+      });
+    });
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
+      className="glass-panel group w-full max-w-[300px] overflow-hidden rounded-[18px] p-2"
+    >
+      <div className="flex h-9 items-center justify-between px-1.5">
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+          <WandSparkles className="h-3.5 w-3.5 text-amber-300" />
+          {clip.title}
+        </div>
+        <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] text-slate-400">
+          {clip.duration}
+        </span>
+      </div>
+
+      <div className="relative mt-1.5 aspect-[9/16] overflow-hidden rounded-[14px] bg-[#090c17]">
+        {playing ? (
+          <video
+            ref={videoRef}
+            className="h-full w-full object-cover"
+            src={clip.src}
+            controls
+            playsInline
+            preload="metadata"
+          />
+        ) : (
+          <button
+            type="button"
+            onClick={handlePlay}
+            aria-label={`Putar ${clip.title}`}
+            className="absolute inset-0 h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          >
+            <Image
+              src={clip.cover}
+              alt={`Cover ${clip.title}`}
+              fill
+              sizes="(max-width: 640px) 90vw, 300px"
+              className="object-cover transition duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#05060b]/85 via-[#05060b]/10 to-transparent" />
+            <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-amber-200/40 bg-amber-300/20 text-amber-50 shadow-[0_0_45px_rgba(245,185,66,0.25)] backdrop-blur-md transition duration-300 group-hover:scale-110 group-hover:bg-amber-300 group-hover:text-black">
+              <Play className="ml-1 h-7 w-7 fill-current" />
+            </span>
+          </button>
+        )}
+      </div>
+    </motion.div>
   );
 }

@@ -2,36 +2,24 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Crown, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Check, Crown, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
-const plans = [
-  {
-    name: "Basic",
-    price: "Rp19.000",
-    daily: "sekitar Rp633/hari",
-    href: "/signup?plan=basic",
-    cta: "Pilih Basic",
-    description: "Untuk mulai membangun katalog produk yang lebih rapi.",
-    features: ["Akses DowaLabs Canvas", "Prompt dasar", "Tutorial penggunaan"],
-  },
-  {
-    name: "Pro",
-    price: "Rp35.000",
-    daily: "sekitar Rp1.167/hari",
-    href: "/signup?plan=pro",
-    cta: "Mulai dengan Pro",
-    description: "Untuk affiliate yang ingin produksi konten lebih konsisten.",
-    recommended: true,
-    features: [
-      "Semua fitur Basic",
-      "Prompt premium",
-      "Template affiliate",
-      "Prioritas update",
-    ],
-  },
-];
+const plan = {
+  name: "Pro",
+  price: "Rp30.000",
+  daily: "hanya Rp1.000/hari",
+  href: "/signup",
+  cta: "Mulai dengan Pro",
+  description: "Satu paket lengkap untuk produksi konten affiliate yang konsisten.",
+  features: [
+    "Akses semua tool DowaLabs Canvas",
+    "5.000 prompt produk siap pakai",
+    "Template affiliate premium",
+    "Tutorial penggunaan",
+    "Prioritas update",
+  ],
+};
 
 export function Pricing() {
   return (
@@ -44,40 +32,29 @@ export function Pricing() {
             Investasi kecil untuk visual yang terlihat lebih bernilai
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-400 sm:text-base">
-            Pilih paket sesuai ritme produksi konten. Upgrade kapan saja saat kebutuhan bertambah.
+            Satu paket lengkap, tanpa pilihan yang membingungkan.
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-5xl items-stretch gap-4 md:grid-cols-2 md:gap-5">
-          {plans.map((plan, index) => (
-            <motion.div
-              key={plan.name}
-              initial={{ y: 24 }}
-              whileInView={{ y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ y: -5 }}
-              className={cn(
-                "relative flex flex-col overflow-hidden rounded-[8px] p-6 sm:p-8",
-                plan.recommended
-                  ? "border border-amber-300/35 bg-[linear-gradient(155deg,rgba(245,185,66,0.14),rgba(13,15,25,0.94)_42%)] shadow-[0_28px_90px_rgba(180,113,20,0.16)] md:-translate-y-3"
-                  : "glass-panel"
-              )}
-            >
-              {plan.recommended && (
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent" />
-              )}
+        <div className="mx-auto max-w-xl">
+          <motion.div
+            initial={{ y: 24 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ y: -5 }}
+            className="relative flex flex-col overflow-hidden rounded-[8px] border border-amber-300/35 bg-[linear-gradient(155deg,rgba(245,185,66,0.14),rgba(13,15,25,0.94)_42%)] p-6 shadow-[0_28px_90px_rgba(180,113,20,0.16)] sm:p-8"
+          >
+              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent" />
 
               <div className="flex items-start justify-between gap-4">
                 <div className="flex h-11 w-11 items-center justify-center rounded-[8px] border border-white/10 bg-white/[0.06] text-amber-300">
-                  {plan.recommended ? <Crown className="h-5 w-5" /> : <Sparkles className="h-5 w-5" />}
+                  <Crown className="h-5 w-5" />
                 </div>
-                {plan.recommended && (
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-300 px-3 py-1.5 text-[10px] font-bold uppercase text-[#130d04] sm:text-xs">
-                    <Zap className="h-3.5 w-3.5 fill-current" />
-                    Paling direkomendasikan
-                  </div>
-                )}
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-300 px-3 py-1.5 text-[10px] font-bold uppercase text-[#130d04] sm:text-xs">
+                  <Zap className="h-3.5 w-3.5 fill-current" />
+                  Paket lengkap
+                </div>
               </div>
 
               <div className="mt-7">
@@ -104,21 +81,13 @@ export function Pricing() {
                 ))}
               </ul>
 
-              <Button
-                asChild
-                className={cn(
-                  "mt-8 w-full",
-                  !plan.recommended && "border border-white/15 bg-white/[0.06] text-white shadow-none hover:bg-white/10"
-                )}
-                size="lg"
-              >
+              <Button asChild className="mt-8 w-full" size="lg">
                 <Link href={plan.href}>
                   {plan.cta}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-            </motion.div>
-          ))}
+          </motion.div>
         </div>
 
         <p className="mx-auto mt-8 max-w-xl text-center text-xs leading-6 text-slate-500">

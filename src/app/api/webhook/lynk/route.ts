@@ -1,188 +1,160 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { PaymentLog, type IPaymentLog } from "@/models/PaymentLog";
-import { User } from "@/models/User";
-import { parseLynkPayload, verifyWebhookSecret } from "@/lib/lynk";
 import { computeMembershipEnd, isSuccessStatus } from "@/lib/membership";
-import type { HydratedDocument } from "mongoose";
+import { parseLynkPayload, verifyWebhookSecret } from "@/lib/lynk";
+import { PaymentLog } from "@/models/PaymentLog";
+import { User } from "@/models/User";
 
 export const runtime = "nodejs";
 
-/**
- * Lynk.id payment webhook.
- *
- * Design goals (PRD §14.4 / §18):
- *  - Never crash on an unexpected payload shape.
- *  - Always persist the raw payload to PaymentLog.
- *  - Idempotent: a repeated order/transaction is not processed twice.
- *  - Return HTTP 200 after safe handling so Lynk stops retrying.
- */
+function response(fields: Record<string, unknown> = {}) {
+  return NextResponse.json({ success: true, ...fields });
+}
+
 export async function POST(req: NextRequest) {
-  // 1. Read + parse the body defensively.
   let rawText = "";
   let payload: Record<string, unknown> = {};
+
   try {
     rawText = await req.text();
     if (rawText) {
       const parsed = JSON.parse(rawText);
-      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-        payload = parsed as Record<string, unknown>;
-      } else {
-        payload = { _raw: parsed };
-      }
+      payload =
+        parsed && typeof parsed === "object" && !Array.isArray(parsed)
+          ? (parsed as Record<string, unknown>)
+          : { value: parsed };
     }
   } catch {
-    // Not JSON — keep the raw text so an admin can inspect it later.
-    payload = { _rawText: rawText };
-  }
-
-  // 2. Optional signature/secret verification.
-  if (!verifyWebhookSecret(req.headers, payload)) {
-    console.warn("[lynk webhook] invalid signature/secret");
-    try {
-      await connectToDatabase();
-      await PaymentLog.create({
-        provider: "lynk",
-        status: "rejected_signature",
-        rawPayload: payload,
-        processed: false,
-        processingError: "INVALID_SIGNATURE",
-      });
-    } catch (e) {
-      console.error("[lynk webhook] failed to log rejected payload:", e);
-    }
-    return NextResponse.json(
-      { ok: false, error: "invalid signature" },
-      { status: 401 }
-    );
+    payload = { rawText };
   }
 
   const fields = parseLynkPayload(payload);
+  let currentLogId: string | null = null;
 
   try {
     await connectToDatabase();
 
-    // 3. Idempotency: look for an existing log with same order/transaction id.
-    let log: HydratedDocument<IPaymentLog> | null = null;
-    const idOr: Record<string, unknown>[] = [];
-    if (fields.orderId) idOr.push({ orderId: fields.orderId });
-    if (fields.transactionId)
-      idOr.push({ transactionId: fields.transactionId });
+    const log = await PaymentLog.create({
+      provider: "lynk",
+      orderId: fields.orderId,
+      transactionId: fields.transactionId,
+      amount: fields.amount,
+      status: fields.status,
+      productName: fields.productName,
+      email: fields.email,
+      whatsapp: fields.whatsapp,
+      packageName: fields.packageName,
+      rawPayload: payload,
+      processed: false,
+      processingNote: null,
+    });
+    currentLogId = log._id.toString();
 
-    if (idOr.length > 0) {
-      log = await PaymentLog.findOne({ $or: idOr });
-      if (log && log.processed) {
-        // Already activated for this payment — skip but acknowledge.
-        return NextResponse.json({ ok: true, duplicate: true });
+    if (!verifyWebhookSecret(req.headers, payload)) {
+      log.processingNote = "Invalid webhook secret";
+      await log.save();
+      return NextResponse.json(
+        { success: false, message: "Invalid webhook signature" },
+        { status: 401 }
+      );
+    }
+
+    const duplicateConditions: Record<string, unknown>[] = [];
+    if (fields.orderId) duplicateConditions.push({ orderId: fields.orderId });
+    if (fields.transactionId) {
+      duplicateConditions.push({ transactionId: fields.transactionId });
+    }
+
+    if (duplicateConditions.length > 0) {
+      const duplicate = await PaymentLog.findOne({
+        _id: { $ne: log._id },
+        processed: true,
+        $or: duplicateConditions,
+      });
+
+      if (duplicate) {
+        log.processed = true;
+        log.processingNote = "Duplicate transaction";
+        await log.save();
+        return response({ processed: true, duplicate: true });
       }
     }
 
-    // 4. Upsert/create the payment log with the latest payload.
-    if (!log) {
-      log = await PaymentLog.create({
-        provider: "lynk",
-        orderId: fields.orderId,
-        transactionId: fields.transactionId,
-        email: fields.email,
-        whatsapp: fields.whatsapp,
-        amount: fields.amount,
-        packageName: fields.packageName,
-        status: fields.status,
-        rawPayload: payload,
-        processed: false,
-      });
-    } else {
-      log.email = fields.email ?? log.email;
-      log.whatsapp = fields.whatsapp ?? log.whatsapp;
-      log.amount = fields.amount ?? log.amount;
-      log.packageName = fields.packageName ?? log.packageName;
-      log.status = fields.status;
-      log.rawPayload = payload;
-    }
-
-    // 5. Only proceed on a successful payment status.
     if (!isSuccessStatus(fields.status)) {
-      log.processed = false;
-      log.processingError = `NON_SUCCESS_STATUS:${fields.status}`;
+      log.processingNote = "Status is not successful";
       await log.save();
-      return NextResponse.json({ ok: true, processed: false });
+      return response({ processed: false });
     }
 
-    // 6. Match the payment to a user (email first, then whatsapp).
-    const matchOr: Record<string, unknown>[] = [];
-    if (fields.email) matchOr.push({ email: fields.email });
-    if (fields.whatsapp) matchOr.push({ whatsapp: fields.whatsapp });
-
-    const user =
-      matchOr.length > 0 ? await User.findOne({ $or: matchOr }) : null;
+    let user = fields.email
+      ? await User.findOne({ email: fields.email.toLowerCase() })
+      : null;
+    if (!user && fields.whatsapp) {
+      user = await User.findOne({ whatsapp: fields.whatsapp });
+    }
 
     if (!user) {
-      log.processed = false;
-      log.processingError = "USER_NOT_FOUND";
+      log.processingNote = "User not found";
       await log.save();
-      console.warn(
-        `[lynk webhook] user not found (email=${fields.email}, wa=${fields.whatsapp})`
-      );
-      return NextResponse.json({ ok: true, processed: false });
+      return response({ processed: false });
     }
 
-    // 7. Activate / extend membership.
     const now = new Date();
-    // True when there is still time left on the current period -> we extend it.
-    const isRenewal =
+    const hasActivePeriod =
       user.membershipStatus === "active" &&
       !!user.membershipEnd &&
       user.membershipEnd.getTime() > now.getTime();
 
-    const newEnd = computeMembershipEnd(user.membershipEnd, now);
-
-    if (!isRenewal) {
-      // Fresh period (was pending/expired/blocked/new) -> start counts from now.
-      user.membershipStart = now;
-    }
+    if (!hasActivePeriod) user.membershipStart = now;
     user.membershipStatus = "active";
-    user.membershipEnd = newEnd;
-    if (fields.packageName) user.packageName = fields.packageName;
+    user.membershipEnd = computeMembershipEnd(user.membershipEnd, now);
+    user.packageName = "pro";
     await user.save();
 
     log.userId = user._id;
     log.processed = true;
-    log.processingError = null;
+    log.processingNote = "User activated";
     await log.save();
 
-    console.log(
-      `[lynk webhook] activated user ${user.email} until ${newEnd.toISOString()}`
-    );
-
-    return NextResponse.json({ ok: true, processed: true });
+    return response({ processed: true });
   } catch (error) {
-    console.error("[lynk webhook] processing error:", error);
-    // Try to persist the failure without leaking internals to the caller.
-    try {
-      await PaymentLog.create({
-        provider: "lynk",
-        orderId: fields.orderId,
-        transactionId: fields.transactionId,
-        email: fields.email,
-        whatsapp: fields.whatsapp,
-        amount: fields.amount,
-        status: fields.status,
-        rawPayload: payload,
-        processed: false,
-        processingError: "INTERNAL_ERROR",
-      });
-    } catch {
-      /* ignore secondary failure */
+    console.error("[lynk webhook] processing failed");
+
+    if (currentLogId) {
+      try {
+        await PaymentLog.findByIdAndUpdate(currentLogId, {
+          processed: false,
+          processingNote: "Internal processing error",
+        });
+      } catch {
+        // The original payload was already persisted when possible.
+      }
+    } else {
+      try {
+        await connectToDatabase();
+        await PaymentLog.create({
+          provider: "lynk",
+          orderId: fields.orderId,
+          transactionId: fields.transactionId,
+          amount: fields.amount,
+          status: fields.status,
+          productName: fields.productName,
+          email: fields.email,
+          whatsapp: fields.whatsapp,
+          rawPayload: payload,
+          processed: false,
+          processingNote: "Internal processing error",
+        });
+      } catch {
+        // MongoDB is unavailable; do not leak the connection error.
+      }
     }
-    // Still return 200 so Lynk does not hammer us with retries.
-    return NextResponse.json({ ok: true, processed: false });
+
+    void error;
+    return response({ processed: false });
   }
 }
 
-// A simple GET so the endpoint can be verified in a browser / health check.
 export async function GET() {
-  return NextResponse.json({
-    ok: true,
-    message: "Lynk webhook endpoint is live. Send a POST request here.",
-  });
+  return response({ message: "Lynk webhook endpoint is ready" });
 }
