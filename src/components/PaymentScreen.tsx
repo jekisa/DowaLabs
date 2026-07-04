@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
   Building2,
@@ -23,6 +23,7 @@ import type { SerializedManualPayment } from "@/lib/manual-payment";
 import { cn, formatDate, formatIDR } from "@/lib/utils";
 import { UserAreaShell } from "@/components/dashboard/user-area-shell";
 import type { CanvasLinks } from "@/lib/canvas-tools";
+import { trackMetaEventOnce } from "@/lib/facebookPixel";
 
 interface PaymentSettings {
   proPrice: number;
@@ -61,6 +62,32 @@ export function PaymentScreen({
     () => invoices.find((invoice) => invoice.id === selectedId) ?? invoices[0] ?? null,
     [invoices, selectedId]
   );
+
+  useEffect(() => {
+    const approvedInvoice = invoices.find((invoice) => {
+      if (invoice.status !== "approved" || !invoice.reviewedAt) return false;
+      const reviewedAt = new Date(invoice.reviewedAt).getTime();
+      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+      return Number.isFinite(reviewedAt) && Date.now() - reviewedAt <= sevenDays;
+    });
+
+    if (!approvedInvoice) return;
+
+    trackMetaEventOnce(
+      `purchase:${approvedInvoice.id}`,
+      "Purchase",
+      {
+        content_name: "Paket Pro",
+        content_ids: [approvedInvoice.packageName],
+        content_type: "product",
+        value: approvedInvoice.amount,
+        currency: approvedInvoice.currency,
+        num_items: 1,
+      },
+      { eventId: `purchase-${approvedInvoice.id}` }
+    );
+  }, [invoices]);
+
   function replaceInvoice(invoice: SerializedManualPayment) {
     setInvoices((current) => {
       const exists = current.some((item) => item.id === invoice.id);
@@ -84,7 +111,23 @@ export function PaymentScreen({
         toast.error(payload.error || "Gagal membuat invoice");
         return;
       }
-      replaceInvoice(payload.invoice);
+      const invoice = payload.invoice as SerializedManualPayment;
+      replaceInvoice(invoice);
+      if (!payload.reused) {
+        trackMetaEventOnce(
+          `checkout:${invoice.id}`,
+          "InitiateCheckout",
+          {
+            content_name: "Paket Pro",
+            content_ids: [invoice.packageName],
+            content_type: "product",
+            value: invoice.amount,
+            currency: invoice.currency,
+            num_items: 1,
+          },
+          { eventId: `checkout-${invoice.id}` }
+        );
+      }
       toast.success(payload.message || "Invoice berhasil dibuat");
     } catch {
       toast.error("Tidak dapat terhubung ke server");
@@ -115,7 +158,23 @@ export function PaymentScreen({
         toast.error(payload.error || "Gagal mengunggah bukti transfer");
         return;
       }
-      replaceInvoice(payload.invoice);
+      const invoice = payload.invoice as SerializedManualPayment;
+      const isFirstProof = !selected.hasProof;
+      replaceInvoice(invoice);
+      if (isFirstProof) {
+        trackMetaEventOnce(
+          `payment-info:${invoice.id}`,
+          "AddPaymentInfo",
+          {
+            content_name: "Transfer Bank Paket Pro",
+            content_ids: [invoice.packageName],
+            content_type: "product",
+            value: invoice.amount,
+            currency: invoice.currency,
+          },
+          { eventId: `payment-info-${invoice.id}` }
+        );
+      }
       setProof(null);
       if (proofInputRef.current) proofInputRef.current.value = "";
       toast.success(payload.message);

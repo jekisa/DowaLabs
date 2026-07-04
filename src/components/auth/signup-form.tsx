@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { facebookPixel } from "@/lib/facebookPixel";
 
 export function SignupForm() {
   const router = useRouter();
@@ -43,6 +44,17 @@ export function SignupForm() {
         setError(payload.error || "Signup gagal. Periksa data lalu coba lagi.");
         return;
       }
+      facebookPixel.completeRegistration({
+        content_name: "Paket Pro",
+        status: true,
+        value: 0,
+        currency: "IDR",
+      });
+      facebookPixel.startTrial({
+        content_name: "Pro onboarding",
+        value: 0,
+        currency: "IDR",
+      });
       router.push("/payment");
       router.refresh();
     } catch {
@@ -78,7 +90,7 @@ export function SignupForm() {
               id="password"
               name="password"
               type="password"
-              placeholder="Minimal 8 karakter"
+              placeholder="Minimal 8 karakter kombinasi + angka"
               required
             />
           </div>

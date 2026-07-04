@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import { MetaPixel } from "@/components/MetaPixel";
 import { Toaster } from "@/components/ui/sonner";
 import { BRAND_NAME } from "@/lib/constants";
 
@@ -32,6 +34,9 @@ export default function RootLayout({
     <html lang="id" className="dark">
       <body className={`${inter.variable} font-sans`}>
         {children}
+        <Suspense fallback={null}>
+          <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
+        </Suspense>
         <Toaster />
       </body>
     </html>
