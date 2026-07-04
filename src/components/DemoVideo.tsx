@@ -17,7 +17,7 @@ const DEMO_CLIPS: DemoClip[] = [
     title: "Product Studio",
     duration: "00:18",
     src: "/videos/product_affiliate.mp4",
-    cover: "/images/showcase/powcan_tumbler.JPG",
+    cover: "/images/showcase/powcan_tumbler.jpg",
   },
   {
     title: "Lifestyle Campaign",
