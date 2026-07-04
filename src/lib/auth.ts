@@ -54,8 +54,9 @@ export async function getCurrentUser(): Promise<IUser | null> {
   if (!session?.sub) return null;
 
   await connectToDatabase();
-  const user = await User.findById(session.sub);
+  const user = await User.findById(session.sub).select("+sessionVersion");
   if (!user) return null;
+  if ((user.sessionVersion ?? 0) !== session.sessionVersion) return null;
 
   if (isExpired(user.membershipStatus as MembershipStatus, user.membershipEnd)) {
     user.membershipStatus = "expired";

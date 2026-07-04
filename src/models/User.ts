@@ -13,6 +13,10 @@ export interface IUser {
   membershipStart: Date | null;
   membershipEnd: Date | null;
   lastLoginAt: Date | null;
+  passwordResetTokenHash?: string;
+  passwordResetExpiresAt?: Date;
+  passwordResetRequestedAt?: Date;
+  sessionVersion: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -51,6 +55,10 @@ const UserSchema = new Schema<IUser>(
     membershipStart: { type: Date, default: null },
     membershipEnd: { type: Date, default: null },
     lastLoginAt: { type: Date, default: null },
+    passwordResetTokenHash: { type: String, select: false, index: true },
+    passwordResetExpiresAt: { type: Date, select: false },
+    passwordResetRequestedAt: { type: Date, select: false },
+    sessionVersion: { type: Number, default: 0, min: 0, select: false },
   },
   { timestamps: true }
 );

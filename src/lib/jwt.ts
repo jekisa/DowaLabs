@@ -10,6 +10,7 @@ export interface SessionPayload extends JwtPayload {
   email: string;
   role: SessionRole;
   name: string;
+  sessionVersion: number;
 }
 
 export interface TokenUser {
@@ -18,6 +19,7 @@ export interface TokenUser {
   email: string;
   role: SessionRole;
   name: string;
+  sessionVersion?: number;
 }
 
 function getJwtSecret(): string {
@@ -37,6 +39,7 @@ export function createToken(user: TokenUser): string {
       email: user.email,
       role: user.role,
       name: user.name,
+      sessionVersion: user.sessionVersion ?? 0,
     },
     getJwtSecret(),
     {
@@ -60,9 +63,14 @@ export function verifyToken(token: string | null | undefined): SessionPayload | 
       typeof payload.sub === "string" &&
       typeof payload.email === "string" &&
       typeof payload.name === "string" &&
+      (payload.sessionVersion === undefined ||
+        typeof payload.sessionVersion === "number") &&
       (payload.role === "user" || payload.role === "admin")
     ) {
-      return payload as SessionPayload;
+      return {
+        ...payload,
+        sessionVersion: payload.sessionVersion ?? 0,
+      } as SessionPayload;
     }
   } catch {
     return null;

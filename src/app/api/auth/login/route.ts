@@ -27,7 +27,9 @@ export async function POST(req: NextRequest) {
 
   try {
     await connectToDatabase();
-    const user = await User.findOne({ email }).select("+passwordHash");
+    const user = await User.findOne({ email }).select(
+      "+passwordHash +sessionVersion"
+    );
     if (!user) {
       return fail("Email atau password salah", 401);
     }

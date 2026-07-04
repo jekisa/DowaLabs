@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Loader2, LockKeyhole, Mail } from "lucide-react";
+import {
+  AlertCircle,
+  Loader2,
+  LockKeyhole,
+  Mail,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -81,7 +86,15 @@ export function LoginForm() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <div className="flex items-center justify-between gap-3">
+              <Label htmlFor="password">Password</Label>
+              {/* <Link
+                href="/forgot-password"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-300 transition hover:text-amber-200 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                Lupa password?
+              </Link> */}
+            </div>
             <div className="relative">
               <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
               <Input

@@ -33,6 +33,21 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password wajib diisi"),
 });
 
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Email tidak valid"),
+});
+
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().trim().min(32, "Token reset tidak valid").max(256),
+    password: z.string().min(8, "Password minimal 8 karakter").max(72),
+    confirmPassword: z.string().min(1, "Konfirmasi password wajib diisi"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Konfirmasi password tidak cocok",
+    path: ["confirmPassword"],
+  });
+
 export const updateUserSchema = z.object({
   membershipStatus: z
     .enum(["pending", "active", "expired", "blocked"])
