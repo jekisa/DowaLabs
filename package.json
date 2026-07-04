@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node --require ./scripts/normalize-readlink.cjs ./node_modules/next/dist/bin/next dev",
+    "build": "node --require ./scripts/normalize-readlink.cjs ./node_modules/next/dist/bin/next build",
+    "start": "node --require ./scripts/normalize-readlink.cjs ./node_modules/next/dist/bin/next start",
     "lint": "next lint",
     "seed:admin": "tsx scripts/seed-admin.ts",
     "db:fix-indexes": "tsx scripts/fix-user-indexes.ts"

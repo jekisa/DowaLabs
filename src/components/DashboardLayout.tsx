@@ -73,32 +73,6 @@ const PROJECTS = [
   { name: "Brand Moodboard", type: "Concept", position: "58% 56%" },
 ];
 
-const SHOWCASE_VIDEOS: Array<{
-  title: string;
-  description: string;
-  badge: string;
-  src: string;
-}> = [
-  {
-    title: "Product Studio Walkthrough",
-    description: "Ubah foto produk menjadi visual studio yang siap jual.",
-    badge: "Studio",
-    src: "/videos/demo-1.mp4",
-  },
-  {
-    title: "Lifestyle & Campaign",
-    description: "Hasilkan visual lifestyle yang konsisten untuk campaign.",
-    badge: "Lifestyle",
-    src: "/videos/demo-2.mp4",
-  },
-  {
-    title: "Background & Color Grading",
-    description: "Bersihkan background dan atur tone warna produk Anda.",
-    badge: "Editing",
-    src: "/videos/demo-3.mp4",
-  },
-];
-
 const QUICK_ACTIONS: Array<{
   label: string;
   description: string;
@@ -106,13 +80,13 @@ const QUICK_ACTIONS: Array<{
   icon: LucideIcon;
   disabled?: boolean;
 }> = [
-  { label: "Transfer Bank", description: "Bayar atau perpanjang", href: "/payment", icon: CreditCard },
-  { label: "Tutorial", description: "Pelajari workflow", href: "/demo", icon: BookOpen },
-  { label: "Billing", description: "Invoice membership", href: "/payment", icon: ReceiptText },
-  { label: "History", description: "Riwayat pembayaran", href: "/payment", icon: History },
-  { label: "Support", description: "Bantuan & FAQ", href: "/faq", icon: Headphones },
-  { label: "Settings", description: "Segera tersedia", href: "/dashboard", icon: Settings, disabled: true },
-];
+    { label: "Transfer Bank", description: "Bayar atau perpanjang", href: "/payment", icon: CreditCard },
+    { label: "Tutorial", description: "Pelajari workflow", href: "/demo", icon: BookOpen },
+    { label: "Billing", description: "Invoice membership", href: "/payment", icon: ReceiptText },
+    { label: "History", description: "Riwayat pembayaran", href: "/payment", icon: History },
+    { label: "Support", description: "Bantuan & FAQ", href: "/faq", icon: Headphones },
+    { label: "Settings", description: "Segera tersedia", href: "/dashboard", icon: Settings, disabled: true },
+  ];
 
 export function DashboardLayout({
   user,
@@ -194,8 +168,6 @@ export function DashboardLayout({
             <MembershipCard user={user} />
             <AIStudioCard user={user} canvasUrl={canvasUrl} />
           </div>
-
-          <VideoShowcase />
 
           <details id="dashboard-more" className="group rounded-[24px] border border-white/[0.06] bg-white/[0.02] open:bg-transparent">
             <summary className="flex cursor-pointer list-none items-center gap-4 rounded-[24px] px-5 py-4 transition hover:bg-white/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 [&::-webkit-details-marker]:hidden">
@@ -527,50 +499,6 @@ function AIStudioCard({ user, canvasUrl }: { user: PublicUser; canvasUrl: string
   );
 }
 
-function VideoShowcase() {
-  return (
-    <section data-dashboard-search="video showcase tutorial demo gallery">
-      <SectionHeading
-        eyebrow="Video Showcase"
-        title="Lihat AI Studio Beraksi"
-        description="Tonton contoh hasil dan workflow DowaLabs langsung dari dashboard."
-      />
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {SHOWCASE_VIDEOS.map((video, index) => (
-          <motion.article
-            key={video.title}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.06 }}
-            className="group overflow-hidden rounded-[22px] border border-white/[0.06] bg-white/[0.028] shadow-[0_18px_50px_rgba(0,0,0,0.2)] backdrop-blur-xl transition-colors hover:border-amber-300/15 hover:bg-white/[0.04]"
-          >
-            <div className="relative aspect-video overflow-hidden bg-[#090c17]">
-              <video
-                className="h-full w-full object-cover"
-                src={video.src}
-                controls
-                playsInline
-                preload="metadata"
-              />
-              <span className="pointer-events-none absolute left-3 top-3 rounded-full border border-white/10 bg-black/45 px-2.5 py-1 text-[10px] font-medium text-amber-200 backdrop-blur">
-                {video.badge}
-              </span>
-            </div>
-            <div className="p-4">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-                <Video className="h-4 w-4 text-amber-300" />
-                {video.title}
-              </h3>
-              <p className="mt-1.5 text-[11px] leading-4 text-slate-500">{video.description}</p>
-            </div>
-          </motion.article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function ActivityTimeline({ user }: { user: PublicUser }) {
   const activities = [
     { title: "Login berhasil", detail: user.lastLoginAt ? formatDate(user.lastLoginAt) : "Sesi aktif", icon: CheckCircle2, complete: true },
@@ -582,13 +510,15 @@ function ActivityTimeline({ user }: { user: PublicUser }) {
   return (
     <PremiumCard search="activity login history aktivitas" title="Recent Activity" eyebrow="Account timeline" icon={Activity}>
       <div className="mt-6 max-h-[310px] space-y-0 overflow-y-auto pr-2 [scrollbar-color:rgba(255,255,255,.12)_transparent] [scrollbar-width:thin]">
-        {activities.map((item, index) => { const Icon = item.icon; return (
-          <div key={item.title} className="relative flex gap-3 pb-6 last:pb-0">
-            {index < activities.length - 1 && <span className="absolute left-[17px] top-9 h-[calc(100%-20px)] w-px bg-white/[0.07]" />}
-            <span className={cn("relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-xl border", item.complete ? "border-emerald-400/15 bg-emerald-400/[0.08] text-emerald-300" : "border-white/[0.07] bg-white/[0.025] text-slate-600")}><Icon className="h-4 w-4" /></span>
-            <div className="pt-0.5"><p className={cn("text-sm font-medium", item.complete ? "text-slate-200" : "text-slate-500")}>{item.title}</p><p className="mt-1 text-xs text-slate-600">{item.detail}</p></div>
-          </div>
-        ); })}
+        {activities.map((item, index) => {
+          const Icon = item.icon; return (
+            <div key={item.title} className="relative flex gap-3 pb-6 last:pb-0">
+              {index < activities.length - 1 && <span className="absolute left-[17px] top-9 h-[calc(100%-20px)] w-px bg-white/[0.07]" />}
+              <span className={cn("relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-xl border", item.complete ? "border-emerald-400/15 bg-emerald-400/[0.08] text-emerald-300" : "border-white/[0.07] bg-white/[0.025] text-slate-600")}><Icon className="h-4 w-4" /></span>
+              <div className="pt-0.5"><p className={cn("text-sm font-medium", item.complete ? "text-slate-200" : "text-slate-500")}>{item.title}</p><p className="mt-1 text-xs text-slate-600">{item.detail}</p></div>
+            </div>
+          );
+        })}
       </div>
     </PremiumCard>
   );
@@ -598,7 +528,7 @@ function TutorialCard() {
   return (
     <PremiumCard id="tutorial" search="tutorial demo belajar video" title="Tutorial Pilihan" eyebrow="Learn the workflow" icon={BookOpen}>
       <div className="mt-6 grid gap-5 sm:grid-cols-[1.05fr_0.95fr]">
-        <Link href="/demo" aria-label="Putar tutorial AI Product Studio" className="group relative min-h-56 overflow-hidden rounded-[20px] border border-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+        <Link href="https://youtu.be/GopfhfPfPFI" target="blank" aria-label="Putar tutorial AI Product Studio" className="group relative min-h-56 overflow-hidden rounded-[20px] border border-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
           <Image src="/images/showcase/tshirt-after4.jpg" alt="Thumbnail tutorial AI Product Studio" fill sizes="(max-width: 640px) 100vw, 40vw" className="object-cover transition duration-700 group-hover:scale-105" />
           <div className="absolute inset-0 bg-black/35 transition group-hover:bg-black/25" />
           <span className="absolute left-1/2 top-1/2 grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/45 text-white shadow-2xl backdrop-blur-xl transition duration-300 group-hover:scale-110 group-hover:bg-amber-300 group-hover:text-black"><Play className="ml-1 h-6 w-6 fill-current" /></span>
@@ -650,11 +580,13 @@ function QuickActions() {
   return (
     <PremiumCard search="quick actions transfer tutorial billing history support settings" title="Quick Actions" eyebrow="Shortcuts" icon={WandSparkles}>
       <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {QUICK_ACTIONS.map((action) => { const Icon = action.icon; return action.disabled ? (
-          <div key={action.label} aria-disabled="true" className="flex cursor-not-allowed items-center gap-3 rounded-[18px] border border-white/[0.05] bg-white/[0.018] p-3.5 opacity-50"><span className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.04] text-slate-400"><Icon className="h-[18px] w-[18px]" /></span><span><span className="block text-sm font-medium">{action.label}</span><span className="mt-0.5 block text-[11px] text-slate-600">{action.description}</span></span></div>
-        ) : (
-          <Link key={action.label} href={action.href} className="group flex items-center gap-3 rounded-[18px] border border-white/[0.05] bg-white/[0.018] p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-300/15 hover:bg-amber-300/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"><span className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.04] text-slate-400 transition group-hover:bg-amber-300/10 group-hover:text-amber-300"><Icon className="h-[18px] w-[18px]" /></span><span className="min-w-0"><span className="block text-sm font-medium">{action.label}</span><span className="mt-0.5 block truncate text-[11px] text-slate-600">{action.description}</span></span><ArrowUpRight className="ml-auto h-3.5 w-3.5 text-slate-700 transition group-hover:text-amber-300" /></Link>
-        ); })}
+        {QUICK_ACTIONS.map((action) => {
+          const Icon = action.icon; return action.disabled ? (
+            <div key={action.label} aria-disabled="true" className="flex cursor-not-allowed items-center gap-3 rounded-[18px] border border-white/[0.05] bg-white/[0.018] p-3.5 opacity-50"><span className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.04] text-slate-400"><Icon className="h-[18px] w-[18px]" /></span><span><span className="block text-sm font-medium">{action.label}</span><span className="mt-0.5 block text-[11px] text-slate-600">{action.description}</span></span></div>
+          ) : (
+            <Link key={action.label} href={action.href} className="group flex items-center gap-3 rounded-[18px] border border-white/[0.05] bg-white/[0.018] p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-300/15 hover:bg-amber-300/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"><span className="grid h-10 w-10 place-items-center rounded-xl bg-white/[0.04] text-slate-400 transition group-hover:bg-amber-300/10 group-hover:text-amber-300"><Icon className="h-[18px] w-[18px]" /></span><span className="min-w-0"><span className="block text-sm font-medium">{action.label}</span><span className="mt-0.5 block truncate text-[11px] text-slate-600">{action.description}</span></span><ArrowUpRight className="ml-auto h-3.5 w-3.5 text-slate-700 transition group-hover:text-amber-300" /></Link>
+          );
+        })}
       </div>
     </PremiumCard>
   );

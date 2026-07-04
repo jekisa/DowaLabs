@@ -16,20 +16,20 @@ const DEMO_CLIPS: DemoClip[] = [
   {
     title: "Product Studio",
     duration: "00:18",
-    src: "/videos/demo-1.mp4",
-    cover: "/images/showcase/kacang-after1.jpg",
+    src: "/videos/product_affiliate.mp4",
+    cover: "/images/showcase/powcan_tumbler.JPG",
   },
   {
     title: "Lifestyle Campaign",
     duration: "00:12",
-    src: "/videos/demo-2.mp4",
-    cover: "/images/showcase/tshirt-after3.jpg",
+    src: "/videos/pose_style.mp4",
+    cover: "/images/showcase/Character_1.jpg",
   },
   {
     title: "Background & Color",
     duration: "00:10",
-    src: "/videos/demo-3.mp4",
-    cover: "/images/showcase/kopi-after1.jpg",
+    src: "/videos/BG_changer.mp4",
+    cover: "/images/showcase/Character_5.jpg",
   },
 ];
 
