@@ -2,7 +2,7 @@ export type MembershipStatus = "pending" | "active" | "expired" | "blocked";
 export type PackageName = "basic" | "pro";
 
 export const MEMBERSHIP_DAYS = 30;
-export const PRO_PRICE = 30_000;
+export const PRO_PRICE = 29_900;
 
 /** Normalize common provider statuses that mean a payment has settled. */
 export function isSuccessStatus(status: string): boolean {
@@ -63,8 +63,8 @@ export function canAccessCanvas(
 ): boolean {
   return Boolean(
     status === "active" &&
-      membershipEnd &&
-      !isExpired(status, membershipEnd, now)
+    membershipEnd &&
+    !isExpired(status, membershipEnd, now)
   );
 }
 

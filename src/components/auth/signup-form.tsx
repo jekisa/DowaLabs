@@ -69,7 +69,7 @@ export function SignupForm() {
       <CardHeader>
         <CardTitle className="text-2xl">Buat Akun DowaLabs</CardTitle>
         <CardDescription>
-          Isi data member lalu lanjutkan ke pembayaran paket Pro Rp30.000.
+          Isi data member lalu lanjutkan ke pembayaran paket Pro Rp29.900.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -100,7 +100,7 @@ export function SignupForm() {
               <p className="text-sm font-semibold text-white">Paket Pro</p>
               <p className="mt-1 text-xs text-slate-400">Semua fitur + 5.000 prompt</p>
             </div>
-            <p className="font-semibold text-amber-300">Rp30.000</p>
+            <p className="font-semibold text-amber-300">Rp29.900</p>
           </div>
 
           <Button type="submit" className="w-full" size="lg" disabled={loading}>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const plan = {
   name: "Pro",
-  price: "Rp30.000",
+  price: "Rp29.900",
   daily: "hanya Rp1.000/hari",
   href: "/signup",
   cta: "Mulai dengan Pro",
@@ -45,48 +45,48 @@ export function Pricing() {
             whileHover={{ y: -5 }}
             className="relative flex flex-col overflow-hidden rounded-[8px] border border-amber-300/35 bg-[linear-gradient(155deg,rgba(245,185,66,0.14),rgba(13,15,25,0.94)_42%)] p-6 shadow-[0_28px_90px_rgba(180,113,20,0.16)] sm:p-8"
           >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-200 to-transparent" />
 
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-[8px] border border-white/10 bg-white/[0.06] text-amber-300">
-                  <Crown className="h-5 w-5" />
-                </div>
-                <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-300 px-3 py-1.5 text-[10px] font-bold uppercase text-[#130d04] sm:text-xs">
-                  <Zap className="h-3.5 w-3.5 fill-current" />
-                  Paket lengkap
-                </div>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[8px] border border-white/10 bg-white/[0.06] text-amber-300">
+                <Crown className="h-5 w-5" />
               </div>
-
-              <div className="mt-7">
-                <h3 className="text-xl font-semibold text-white">{plan.name}</h3>
-                <p className="mt-2 min-h-[48px] text-sm leading-6 text-slate-400">{plan.description}</p>
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-amber-300 px-3 py-1.5 text-[10px] font-bold uppercase text-[#130d04] sm:text-xs">
+                <Zap className="h-3.5 w-3.5 fill-current" />
+                Paket lengkap
               </div>
+            </div>
 
-              <div className="mt-6 border-y border-white/[0.08] py-6">
-                <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
-                  <span className="text-4xl font-semibold text-white sm:text-5xl">{plan.price}</span>
-                  <span className="pb-1 text-sm text-slate-400">/ bulan</span>
-                </div>
-                <p className="mt-2 text-xs text-slate-500">{plan.daily}</p>
+            <div className="mt-7">
+              <h3 className="text-xl font-semibold text-white">{plan.name}</h3>
+              <p className="mt-2 min-h-[48px] text-sm leading-6 text-slate-400">{plan.description}</p>
+            </div>
+
+            <div className="mt-6 border-y border-white/[0.08] py-6">
+              <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
+                <span className="text-4xl font-semibold text-white sm:text-5xl">{plan.price}</span>
+                <span className="pb-1 text-sm text-slate-400">/ bulan</span>
               </div>
+              <p className="mt-2 text-xs text-slate-500">{plan.daily}</p>
+            </div>
 
-              <ul className="mt-6 flex-1 space-y-3.5">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-3 text-sm text-slate-300">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-300/10 text-amber-300">
-                      <Check className="h-3.5 w-3.5" />
-                    </span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+            <ul className="mt-6 flex-1 space-y-3.5">
+              {plan.features.map((feature) => (
+                <li key={feature} className="flex items-center gap-3 text-sm text-slate-300">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-300/10 text-amber-300">
+                    <Check className="h-3.5 w-3.5" />
+                  </span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
 
-              <Button asChild className="mt-8 w-full" size="lg">
-                <Link href={plan.href}>
-                  {plan.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
+            <Button asChild className="mt-8 w-full" size="lg">
+              <Link href={plan.href}>
+                {plan.cta}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
           </motion.div>
         </div>
 

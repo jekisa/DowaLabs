@@ -5,7 +5,7 @@ import { CreditCard, LayoutDashboard, LogIn, WandSparkles } from "lucide-react";
 
 const steps = [
   { title: "Daftar akun", detail: "Buat akun menggunakan email dan WhatsApp aktif.", icon: LogIn },
-  { title: "Aktifkan Pro", detail: "Aktifkan paket Pro Rp30.000 untuk 30 hari.", icon: CreditCard },
+  { title: "Aktifkan Pro", detail: "Aktifkan paket Pro Rp29.900 untuk 30 hari.", icon: CreditCard },
   { title: "Buka Canvas", detail: "Akses DowaLabs Canvas langsung dari dashboard.", icon: LayoutDashboard },
   { title: "Generate visual", detail: "Buat foto produk premium yang siap dipasarkan.", icon: WandSparkles },
 ];

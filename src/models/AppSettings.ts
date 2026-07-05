@@ -51,7 +51,7 @@ export async function getAppSettings(): Promise<IAppSettings> {
   await connectToDatabase();
   const existing = await AppSettings.findOne({ key: "global" });
   if (existing) {
-    // DowaLabs now has one public plan with a fixed Rp30.000 price.
+    // DowaLabs now has one public plan with a fixed Rp29.900 price.
     // Keep the legacy Basic fields in storage so old records remain readable.
     if (existing.proPrice !== PRO_PRICE) {
       existing.proPrice = PRO_PRICE;
