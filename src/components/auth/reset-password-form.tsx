@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import {
   AlertCircle,
   CheckCircle2,
+  Eye,
+  EyeOff,
   Loader2,
   LockKeyhole,
 } from "lucide-react";
@@ -111,6 +113,7 @@ export function ResetPasswordForm() {
 }
 
 function PasswordField({ id, label }: { id: string; label: string }) {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
@@ -119,14 +122,21 @@ function PasswordField({ id, label }: { id: string; label: string }) {
         <Input
           id={id}
           name={id}
-          type="password"
+          type={showPassword ? "text" : "password"}
           autoComplete="new-password"
           placeholder="Minimal 8 karakter"
-          className="pl-9"
+          className="px-9"
           minLength={8}
           maxLength={72}
           required
         />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 focus:outline-none"
+        >
+          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+        </button>
       </div>
     </div>
   );

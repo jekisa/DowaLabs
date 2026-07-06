@@ -177,7 +177,7 @@ export function SettingsForm({ initial }: { initial: SettingsData }) {
               className="h-12 rounded-2xl border-white/[0.07] bg-black/10 text-amber-300 focus-visible:ring-amber-300/40"
               value={form.proPrice}
             />
-            <p className="text-xs text-slate-500">Harga paket tunggal ditetapkan Rp30.000 untuk 30 hari.</p>
+            <p className="text-xs text-slate-500">Harga paket tunggal ditetapkan Rp29.900 untuk 30 hari.</p>
           </div>
         </CardContent>
       </Card>

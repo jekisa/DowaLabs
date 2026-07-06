@@ -73,7 +73,7 @@ export const updateSettingsSchema = z.object({
   portraitStyleUrl: urlField.optional(),
   promptAiUrl: urlField.optional(),
   adminWhatsapp: phoneInput.optional(),
-  proPrice: z.coerce.number().refine((value) => value === PRO_PRICE, "Harga Pro harus Rp30.000").optional(),
+  proPrice: z.coerce.number().refine((value) => value === PRO_PRICE, "Harga Pro harus Rp29.900").optional(),
   bankName: z.string().trim().min(2, "Nama bank wajib diisi").max(80).optional(),
   bankAccountNumber: z
     .string()

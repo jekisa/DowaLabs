@@ -64,8 +64,12 @@ export function Pricing() {
 
             <div className="mt-6 border-y border-white/[0.08] py-6">
               <div className="flex flex-wrap items-end gap-x-2 gap-y-1">
-                <span className="text-4xl font-semibold text-white sm:text-5xl">{plan.price}</span>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-slate-500 line-through">Rp60.000</span>
+                  <span className="text-4xl font-semibold text-white sm:text-5xl">{plan.price}</span>
+                </div>
                 <span className="pb-1 text-sm text-slate-400">/ bulan</span>
+                <span className="mb-2 ml-1 inline-flex items-center rounded-full bg-amber-400/20 px-2.5 py-0.5 text-xs font-bold text-amber-300">50% OFF</span>
               </div>
               <p className="mt-2 text-xs text-slate-500">{plan.daily}</p>
             </div>

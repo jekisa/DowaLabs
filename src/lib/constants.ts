@@ -48,7 +48,7 @@ export const HOW_IT_WORKS = [
   {
     step: "02",
     title: "Aktifkan Pro dan bayar",
-    desc: "Buat invoice Pro Rp30.000, lalu transfer ke rekening perusahaan.",
+    desc: "Buat invoice Pro Rp29.900, lalu transfer ke rekening perusahaan.",
   },
   {
     step: "03",

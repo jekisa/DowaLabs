@@ -1,12 +1,19 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { MetaPixel } from "@/components/MetaPixel";
 import { Toaster } from "@/components/ui/sonner";
 import { BRAND_NAME } from "@/lib/constants";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
+
+export const viewport: Viewport = {
+  themeColor: "#070810",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
   title: {
@@ -23,6 +30,19 @@ export const metadata: Metadata = {
     "seller Shopee",
     "UMKM",
   ],
+  openGraph: {
+    title: `${BRAND_NAME} - AI Product Studio`,
+    description: "Buat foto produk affiliate lebih menarik, premium, dan siap jual dengan bantuan AI.",
+    url: "https://dowalabs.com",
+    siteName: BRAND_NAME,
+    locale: "id_ID",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${BRAND_NAME} - AI Product Studio`,
+    description: "Buat foto produk affiliate lebih menarik, premium, dan siap jual dengan bantuan AI.",
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +52,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className="dark">
-      <body className={`${inter.variable} font-sans`}>
+      <body className={`${sans.variable} font-sans`}>
         {children}
         <Suspense fallback={null}>
           <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
@@ -42,4 +62,3 @@ export default function RootLayout({
     </html>
   );
 }
-

@@ -20,8 +20,12 @@ export function Pricing({ embedded = false }: { embedded?: boolean }) {
           <Sparkles className="h-3 w-3" /> Paket Pro
         </div>
         <div className="mt-4 flex items-end gap-2">
-          <span className="text-3xl font-semibold text-white sm:text-4xl">Rp30.000</span>
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-slate-500 line-through">Rp60.000</span>
+            <span className="text-3xl font-semibold text-white sm:text-4xl">Rp29.900</span>
+          </div>
           <span className="pb-1 text-sm text-slate-400">/ bulan</span>
+          <span className="mb-1 ml-1 inline-flex items-center rounded-full bg-amber-400/20 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">50% OFF</span>
         </div>
         <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
           Satu paket lengkap untuk membuat visual produk affiliate yang lebih siap jual.

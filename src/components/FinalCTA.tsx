@@ -36,7 +36,7 @@ export function FinalCTA() {
             </Link>
           </Button>
         </div>
-        <p className="mt-6 text-xs text-slate-500">Paket Pro lengkap hanya Rp30.000 untuk 30 hari.</p>
+        <p className="mt-6 text-xs text-slate-500">Paket Pro lengkap hanya Rp29.900 untuk 30 hari.</p>
       </div>
     </section>
   );
