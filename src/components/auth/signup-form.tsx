@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { facebookPixel } from "@/lib/facebookPixel";
+import { PRO_PRICE } from "@/lib/membership";
 
 export function SignupForm() {
   const router = useRouter();
@@ -48,12 +49,12 @@ export function SignupForm() {
       facebookPixel.completeRegistration({
         content_name: "Paket Pro",
         status: true,
-        value: 0,
+        value: PRO_PRICE,
         currency: "IDR",
       });
       facebookPixel.startTrial({
         content_name: "Pro onboarding",
-        value: 0,
+        value: PRO_PRICE,
         currency: "IDR",
       });
       router.push("/payment");

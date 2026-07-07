@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${BRAND_NAME} - AI Product Studio`,
     description: "Buat foto produk affiliate lebih menarik, premium, dan siap jual dengan bantuan AI.",
-    url: "https://dowalabs.com",
+    url: "https://dowa-labs.vercel.app/",
     siteName: BRAND_NAME,
     locale: "id_ID",
     type: "website",
