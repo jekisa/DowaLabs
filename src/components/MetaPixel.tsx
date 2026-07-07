@@ -2,7 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { facebookPixel } from "@/lib/facebookPixel";
+import { facebookPixel, type MetaEventEnvelope } from "@/lib/facebookPixel";
 
 const VIEW_CONTENT_ROUTES: Record<
   string,
@@ -81,6 +81,28 @@ export function MetaPixel({ pixelId }: { pixelId?: string }) {
       });
     }
   }, [initialized, pathname, routeUrl]);
+
+  useEffect(() => {
+    const handleMetaEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<MetaEventEnvelope>;
+      const envelope = customEvent.detail;
+
+      fetch("/api/meta/capi", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(envelope),
+      }).catch((err) => {
+        console.error("Failed to forward event to Meta Conversions API:", err);
+      });
+    };
+
+    window.addEventListener("meta:event", handleMetaEvent);
+    return () => {
+      window.removeEventListener("meta:event", handleMetaEvent);
+    };
+  }, []);
 
   return null;
 }

@@ -8,6 +8,7 @@ import { computeMembershipEnd } from "@/lib/membership";
 import { serializeManualPayment } from "@/lib/manual-payment";
 import { ManualPayment } from "@/models/ManualPayment";
 import { User } from "@/models/User";
+import { sendMetaCapiEvent } from "@/lib/metaConversionsApi";
 
 export const runtime = "nodejs";
 
@@ -105,6 +106,33 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
 
     if (!approvedId) return fail("Pembayaran gagal disetujui", 500);
     const approved = await ManualPayment.findById(approvedId);
+
+    // Trigger server-side Conversions API Purchase event
+    if (approved) {
+      User.findById(approved.userId).then((member) => {
+        if (member) {
+          sendMetaCapiEvent({
+            eventName: "Purchase",
+            eventId: `purchase-${approved._id.toString()}`,
+            email: member.email,
+            whatsapp: member.whatsapp,
+            value: approved.amount,
+            currency: approved.currency,
+            parameters: {
+              content_name: "Paket Pro",
+              content_ids: [approved.packageName],
+              content_type: "product",
+              num_items: 1,
+            },
+          }).catch((err) => {
+            console.error("[Admin Manual Payments CAPI Purchase] Failed to send event:", err);
+          });
+        }
+      }).catch((err) => {
+        console.error("[Admin Manual Payments CAPI Purchase] Failed to fetch member details:", err);
+      });
+    }
+
     return ok({
       invoice: serializeManualPayment(approved!),
       message: "Pembayaran disetujui dan subscription telah diaktifkan",
