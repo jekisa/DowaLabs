@@ -20,14 +20,27 @@ export interface MetaCapiEvent {
  * Ensures correct hashing of PII fields (email, WhatsApp) and formatting of telephone numbers.
  */
 export async function sendMetaCapiEvent(event: MetaCapiEvent) {
-  const pixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const serverPixelId = process.env.META_PIXEL_ID;
+  const publicPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+  const pixelId = serverPixelId || publicPixelId;
   const accessToken = process.env.META_ACCESS_TOKEN;
 
   if (!pixelId || !accessToken) {
     console.warn(
-      "[Meta CAPI] Skipping event send. NEXT_PUBLIC_META_PIXEL_ID or META_ACCESS_TOKEN is missing."
+      "[Meta CAPI] Skipping event send. META_PIXEL_ID/NEXT_PUBLIC_META_PIXEL_ID or META_ACCESS_TOKEN is missing."
     );
     return;
+  }
+
+  if (!/^\d+$/.test(pixelId)) {
+    console.error("[Meta CAPI] Skipping event send. Meta Pixel ID must contain digits only.");
+    return;
+  }
+
+  if (serverPixelId && publicPixelId && serverPixelId !== publicPixelId) {
+    console.warn(
+      "[Meta CAPI] META_PIXEL_ID and NEXT_PUBLIC_META_PIXEL_ID differ. Server events will use META_PIXEL_ID."
+    );
   }
 
   // SHA-256 Hash helper for string data
