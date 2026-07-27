@@ -30,6 +30,7 @@ export function Footer() {
             <Link href="/#examples" className="hover:text-white">Examples</Link>
             <Link href="/pricing" className="hover:text-white">Harga</Link>
             <Link href="/faq" className="hover:text-white">FAQ</Link>
+            <Link href="/terms" className="hover:text-white">Syarat & Ketentuan</Link>
           </div>
         </div>
         <div>
@@ -43,6 +44,7 @@ export function Footer() {
         <div>
           <h3 className="text-sm font-semibold text-white">Kontak</h3>
           <div className="mt-4 grid gap-2 text-sm text-slate-400">
+            <p className="leading-6">Jl. Poris Gaga Baru RT 03/01<br />Gang Annur 1 No. 146</p>
             <a href="mailto:dowatech889@gmail.com" className="break-all hover:text-white">
               dowatech889@gmail.com
             </a>
