@@ -53,11 +53,6 @@ export function serializeSettings(settings: IAppSettings) {
     promptAiUrl: settings.promptAiUrl || "",
     adminWhatsapp: settings.adminWhatsapp,
     proPrice: settings.proPrice,
-    bankName: settings.bankName || process.env.BANK_NAME || "",
-    bankAccountNumber:
-      settings.bankAccountNumber || process.env.BANK_ACCOUNT_NUMBER || "",
-    bankAccountHolder:
-      settings.bankAccountHolder || process.env.BANK_ACCOUNT_HOLDER || "",
     updatedAt: settings.updatedAt?.toISOString() ?? null,
   };
 }

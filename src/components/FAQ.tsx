@@ -10,7 +10,7 @@ const items = [
   },
   {
     q: "Apakah harus bayar dulu?",
-    a: "Kamu bisa daftar akun dulu. Akses Canvas aktif setelah memilih paket dan pembayaran diverifikasi.",
+    a: "Kamu bisa daftar akun dulu. Akses Canvas aktif setelah pembayaran DOKU berhasil dikonfirmasi.",
   },
   {
     q: "Bagaimana cara akses setelah bayar?",
@@ -18,11 +18,11 @@ const items = [
   },
   {
     q: "Apakah akun langsung aktif?",
-    a: "Unggah bukti transfer pada halaman pembayaran. Admin akan memeriksa bukti dan mengaktifkan subscription setelah transfer terverifikasi.",
+    a: "Ya, akun akan aktif otomatis setelah DOKU mengirim konfirmasi pembayaran berhasil.",
   },
   {
     q: "Kalau pembayaran belum aktif bagaimana?",
-    a: "Buka halaman Transfer Bank, pilih invoice yang ditolak, baca catatan admin, lalu unggah bukti yang benar.",
+    a: "Buka halaman Pembayaran dan cek status invoice. Jika sudah bayar tetapi belum aktif, hubungi admin melalui WhatsApp.",
   },
   {
     q: "Apakah bisa dipakai untuk Shopee affiliate?",

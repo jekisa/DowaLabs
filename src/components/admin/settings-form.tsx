@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { Banknote, Link2, Loader2, Save } from "lucide-react";
+import { Link2, Loader2, Save } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -22,9 +22,6 @@ interface SettingsData {
   promptAiUrl: string;
   adminWhatsapp: string;
   proPrice: number;
-  bankName: string;
-  bankAccountNumber: string;
-  bankAccountHolder: string;
 }
 
 export function SettingsForm({ initial }: { initial: SettingsData }) {
@@ -55,9 +52,6 @@ export function SettingsForm({ initial }: { initial: SettingsData }) {
           promptAiUrl: form.promptAiUrl,
           adminWhatsapp: form.adminWhatsapp,
           proPrice: Number(form.proPrice),
-          bankName: form.bankName,
-          bankAccountNumber: form.bankAccountNumber,
-          bankAccountHolder: form.bankAccountHolder,
         }),
       });
       const data = await res.json();
@@ -138,36 +132,12 @@ export function SettingsForm({ initial }: { initial: SettingsData }) {
 
       <Card className="rounded-[24px] border-white/[0.06] bg-white/[0.028] shadow-[0_24px_70px_rgba(0,0,0,0.2)]">
         <CardHeader className="border-b border-white/[0.05] p-6 sm:p-7">
-          <div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-300/10 text-amber-300"><Banknote className="h-5 w-5" /></span><div><CardTitle className="text-xl">Manual Bank Transfer</CardTitle>
+          <div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-300/10 text-amber-300"><Save className="h-5 w-5" /></span><div><CardTitle className="text-xl">Paket Pro</CardTitle>
           <CardDescription>
-            Rekening perusahaan yang ditampilkan pada invoice dan harga paket.
+            Harga paket yang digunakan oleh DOKU Checkout.
           </CardDescription></div></div>
         </CardHeader>
         <CardContent className="grid gap-5 p-6 sm:grid-cols-2 sm:p-7">
-          <Field
-            label="Nama Bank"
-            id="bankName"
-            value={form.bankName}
-            placeholder="Contoh: BCA"
-            error={errors.bankName}
-            onChange={(v) => update("bankName", v)}
-          />
-          <Field
-            label="Nomor Rekening"
-            id="bankAccountNumber"
-            value={form.bankAccountNumber}
-            placeholder="1234567890"
-            error={errors.bankAccountNumber}
-            onChange={(v) => update("bankAccountNumber", v)}
-          />
-          <Field
-            label="Nama Pemilik Rekening"
-            id="bankAccountHolder"
-            value={form.bankAccountHolder}
-            placeholder="PT DowaLabs Indonesia"
-            error={errors.bankAccountHolder}
-            onChange={(v) => update("bankAccountHolder", v)}
-          />
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="proPrice">Harga Pro (Rp)</Label>
             <Input

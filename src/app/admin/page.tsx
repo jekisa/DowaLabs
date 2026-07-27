@@ -1,35 +1,32 @@
 import Link from "next/link";
 import {
   Activity,
-  AlertTriangle,
   ArrowRight,
   Clock3,
   CreditCard,
   Receipt,
-  ShieldCheck,
   UserCheck,
   Users,
   UserX,
 } from "lucide-react";
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { ManualPayment } from "@/models/ManualPayment";
+import { PaymentLog } from "@/models/PaymentLog";
 
 export const dynamic = "force-dynamic";
 
 async function getStats() {
   await connectToDatabase();
-  const [total, active, pending, expired, blocked, payments, unprocessed] =
+  const [total, active, pending, expired, blocked, payments] =
     await Promise.all([
       User.countDocuments({}),
       User.countDocuments({ membershipStatus: "active" }),
       User.countDocuments({ membershipStatus: "pending" }),
       User.countDocuments({ membershipStatus: "expired" }),
       User.countDocuments({ membershipStatus: "blocked" }),
-      ManualPayment.countDocuments({}),
-      ManualPayment.countDocuments({ status: "waiting_verification" }),
+      PaymentLog.countDocuments({ provider: "doku" }),
     ]);
-  return { total, active, pending, expired, blocked, payments, unprocessed };
+  return { total, active, pending, expired, blocked, payments };
 }
 
 export default async function AdminOverviewPage() {
@@ -38,8 +35,7 @@ export default async function AdminOverviewPage() {
   const primaryCards = [
     { label: "Total Users", value: stats.total, note: "Semua akun terdaftar", icon: Users, tone: "text-indigo-300 bg-indigo-400/10" },
     { label: "Active Members", value: stats.active, note: `${activeRate}% dari total user`, icon: UserCheck, tone: "text-emerald-300 bg-emerald-400/10" },
-    { label: "Total Invoice", value: stats.payments, note: "Seluruh pembayaran", icon: Receipt, tone: "text-cyan-300 bg-cyan-400/10" },
-    { label: "Perlu Verifikasi", value: stats.unprocessed, note: "Menunggu tindakan admin", icon: AlertTriangle, tone: "text-amber-300 bg-amber-300/10" },
+    { label: "DOKU Logs", value: stats.payments, note: "Notifikasi pembayaran", icon: Receipt, tone: "text-cyan-300 bg-cyan-400/10" },
   ];
 
   return (
@@ -50,11 +46,10 @@ export default async function AdminOverviewPage() {
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300">Control Center</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">DowaLabs Admin Overview</h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">Pantau kesehatan membership, invoice, dan pembayaran manual dari satu workspace yang terorganisir.</p>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">Pantau kesehatan membership, user, dan notifikasi pembayaran DOKU dari satu workspace yang terorganisir.</p>
           </div>
-          <Link href="/admin/payments" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-amber-300 px-6 text-sm font-semibold text-black shadow-[0_14px_40px_rgba(245,185,66,0.2)] transition hover:-translate-y-0.5 hover:bg-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
-            <ShieldCheck className="h-4 w-4" /> Verifikasi Transfer
-            {stats.unprocessed > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-black px-1 text-[10px] text-white">{stats.unprocessed}</span>}
+          <Link href="/admin/users" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-amber-300 px-6 text-sm font-semibold text-black shadow-[0_14px_40px_rgba(245,185,66,0.2)] transition hover:-translate-y-0.5 hover:bg-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+            <UserCheck className="h-4 w-4" /> Kelola Users
           </Link>
         </div>
       </section>
@@ -89,8 +84,8 @@ export default async function AdminOverviewPage() {
           <h2 className="mt-2 text-xl font-semibold">Admin Shortcuts</h2>
           <div className="mt-5 space-y-2">
             <QuickLink href="/admin/users" label="Kelola Users" description="Status dan masa aktif" icon={Users} />
-            <QuickLink href="/admin/payments" label="Verifikasi Transfer" description="Bukti pembayaran manual" icon={CreditCard} />
-            <QuickLink href="/admin/settings" label="Application Settings" description="Rekening, harga, dan Canvas" icon={Receipt} />
+            <QuickLink href="/payment" label="Tes Checkout" description="Buka flow DOKU" icon={CreditCard} />
+            <QuickLink href="/admin/settings" label="Application Settings" description="Harga dan Canvas" icon={Receipt} />
           </div>
         </section>
       </div>

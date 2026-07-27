@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
-  Receipt,
   Settings,
   type LucideIcon,
 } from "lucide-react";
@@ -19,7 +18,6 @@ export const ADMIN_ITEMS: Array<{
 }> = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/payments", label: "Verifikasi Transfer", icon: Receipt },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 

@@ -1,57 +1,41 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, ShieldCheck } from "lucide-react";
 import { useState } from "react";
+import { faqItems } from "@/components/landing/landing-data";
 import { cn } from "@/lib/utils";
-
-const faqItems = [
-  {
-    question: "Apakah ini aplikasi AI?",
-    answer: "Ya. DowaLabs menyediakan akses ke tool AI untuk membantu membuat dan mengolah visual produk lebih cepat.",
-  },
-  {
-    question: "Apakah harus bayar dulu?",
-    answer: "Ya. Akses paket Pro aktif setelah pembayaran berhasil dikonfirmasi.",
-  },
-  {
-    question: "Bagaimana cara akses setelah bayar?",
-    answer: "Setelah pembayaran terverifikasi, masuk ke akun DowaLabs dan buka seluruh tool dari dashboard.",
-  },
-  {
-    question: "Apakah bisa dipakai untuk Shopee affiliate?",
-    answer: "Bisa. Visual, template, dan prompt DowaLabs dirancang untuk kebutuhan seller serta konten affiliate.",
-  },
-];
 
 export function Faq() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="bg-[#05060b] py-12 sm:py-14">
+    <section id="faq" className="bg-[#05060b] py-12 sm:py-16">
       <div className="container grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
         <div>
           <p className="eyebrow">FAQ</p>
           <h2 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">Pertanyaan utama sebelum mulai</h2>
           <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
-            Informasi singkat tentang produk, pembayaran, dan akses DowaLabs.
+            Informasi singkat tentang produk, pembayaran, akses, dan risk reversal.
           </p>
+          <div className="mt-5 rounded-xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm leading-6 text-emerald-100">
+            <ShieldCheck className="mb-2 h-5 w-5 text-emerald-200" />
+            Jika pembayaran berhasil tapi akses belum aktif, support akan bantu pengecekan sampai akses aktif atau transaksi ditindaklanjuti.
+          </div>
         </div>
 
         <div className="space-y-2.5">
           {faqItems.map((item, index) => {
             const isOpen = open === index;
             return (
-              <div key={item.question} className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
+              <div key={item.question} className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.035] shadow-[0_18px_55px_rgba(0,0,0,0.18)]">
                 <button
                   type="button"
                   onClick={() => setOpen(isOpen ? null : index)}
                   className="flex w-full items-center justify-between gap-4 px-4 py-3.5 text-left text-sm font-medium text-white"
                 >
                   {item.question}
-                  <ChevronDown
-                    className={cn("h-4 w-4 shrink-0 text-amber-300 transition-transform", isOpen && "rotate-180")}
-                  />
+                  <ChevronDown className={cn("h-4 w-4 shrink-0 text-amber-300 transition-transform", isOpen && "rotate-180")} />
                 </button>
                 <AnimatePresence initial={false}>
                   {isOpen && (

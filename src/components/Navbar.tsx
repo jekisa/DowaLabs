@@ -1,36 +1,67 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, LayoutDashboard, LogIn, Menu, Sparkles, X } from "lucide-react";
+import { ArrowRight, Globe2, LayoutDashboard, LogIn, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
-const navItems = [
-  { label: "Demo", href: "/demo" },
-  { label: "Fitur", href: "/#fitur" },
-  { label: "Harga", href: "/pricing" },
-  { label: "FAQ", href: "/faq" },
-];
+const copy = {
+  id: {
+    navItems: [
+      { label: "Contoh", href: "/#examples" },
+      { label: "Harga", href: "/#pricing" },
+      { label: "FAQ", href: "/#faq" },
+    ],
+    login: "Masuk",
+    start: "Mulai",
+    openMenu: "Buka menu",
+    closeMenu: "Tutup menu",
+    language: "Bahasa",
+  },
+  en: {
+    navItems: [
+      { label: "Examples", href: "/#examples" },
+      { label: "Pricing", href: "/#pricing" },
+      { label: "FAQ", href: "/#faq" },
+    ],
+    login: "Login",
+    start: "Start Now",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    language: "Language",
+  },
+};
 
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
+  const text = copy[language];
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-[#05060b]/80 backdrop-blur-2xl">
       <div className="container flex h-[68px] max-w-full items-center justify-between">
         <Link href="/" className="flex items-center gap-3" aria-label="DowaLabs home">
-          <span className="relative flex h-9 w-9 items-center justify-center rounded-[8px] bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 text-[#090704] shadow-lg shadow-amber-500/20">
-            <Sparkles className="h-5 w-5" />
+          <span className="relative h-10 w-10 overflow-hidden rounded-full border border-white/10 bg-[#05060b] shadow-lg shadow-blue-500/20">
+            <Image
+              src="/images/brand/dowa-logo.png"
+              alt="DowaLabs logo"
+              fill
+              sizes="40px"
+              className="object-cover"
+              priority
+            />
           </span>
           <span className="text-lg font-semibold tracking-normal">DowaLabs</span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
-          {navItems.map((item) => (
+          {text.navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -45,15 +76,31 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <div className="flex h-9 items-center gap-1 rounded-[8px] border border-white/10 bg-white/[0.04] px-1" aria-label={text.language}>
+            <Globe2 className="ml-2 h-4 w-4 text-slate-400" />
+            {(["id", "en"] as const).map((item) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setLanguage(item)}
+                className={cn(
+                  "rounded-md px-2 py-1 text-xs font-semibold text-slate-400 transition hover:text-white",
+                  language === item && "bg-amber-300 text-[#120c03] hover:text-[#120c03]"
+                )}
+              >
+                {item.toUpperCase()}
+              </button>
+            ))}
+          </div>
           <Button asChild variant="ghost" size="sm">
             <Link href="/login">
               <LogIn className="h-4 w-4" />
-              Login
+              {text.login}
             </Link>
           </Button>
           <Button asChild size="sm" className="px-4">
             <Link href="/signup">
-              Mulai Sekarang
+              {text.start}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -62,7 +109,7 @@ export function Navbar() {
         <button
           type="button"
           className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border border-white/10 bg-white/[0.06] md:hidden"
-          aria-label="Buka menu"
+          aria-label={text.openMenu}
           onClick={() => setOpen(true)}
         >
           <Menu className="h-5 w-5" />
@@ -72,9 +119,9 @@ export function Navbar() {
       <AnimatePresence>
         {open && (
           <>
-            <motion.button
+              <motion.button
               type="button"
-              aria-label="Tutup menu"
+              aria-label={text.closeMenu}
               className="fixed inset-0 z-50 bg-black/70 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -94,13 +141,21 @@ export function Navbar() {
                   className="flex items-center gap-2 font-semibold"
                   onClick={() => setOpen(false)}
                 >
-                  <Sparkles className="h-5 w-5 text-amber-300" />
+                  <span className="relative h-8 w-8 overflow-hidden rounded-full border border-white/10 bg-[#05060b]">
+                    <Image
+                      src="/images/brand/dowa-logo.png"
+                      alt="DowaLabs logo"
+                      fill
+                      sizes="32px"
+                      className="object-cover"
+                    />
+                  </span>
                   DowaLabs
                 </Link>
                 <button
                   type="button"
                   className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white/5"
-                  aria-label="Tutup menu"
+                  aria-label={text.closeMenu}
                   onClick={() => setOpen(false)}
                 >
                   <X className="h-5 w-5" />
@@ -108,7 +163,7 @@ export function Navbar() {
               </div>
 
               <div className="mt-8 space-y-2">
-                {navItems.map((item) => (
+                {text.navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -120,17 +175,39 @@ export function Navbar() {
                 ))}
               </div>
 
+              <div className="mt-6 flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.04] p-2">
+                <span className="flex items-center gap-2 px-2 text-sm font-medium text-slate-300">
+                  <Globe2 className="h-4 w-4" />
+                  {text.language}
+                </span>
+                <div className="flex gap-1">
+                  {(["id", "en"] as const).map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => setLanguage(item)}
+                      className={cn(
+                        "rounded-md px-3 py-1.5 text-xs font-semibold text-slate-400",
+                        language === item && "bg-amber-300 text-[#120c03]"
+                      )}
+                    >
+                      {item.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="mt-8 grid gap-3">
                 <Button asChild variant="outline">
                   <Link href="/login" onClick={() => setOpen(false)}>
                     <LogIn className="h-4 w-4" />
-                    Login
+                    {text.login}
                   </Link>
                 </Button>
                 <Button asChild>
                   <Link href="/signup" onClick={() => setOpen(false)}>
                     <LayoutDashboard className="h-4 w-4" />
-                    Mulai Sekarang
+                    {text.start}
                   </Link>
                 </Button>
               </div>

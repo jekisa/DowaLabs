@@ -5,6 +5,7 @@ import "./globals.css";
 import { MetaPixel } from "@/components/MetaPixel";
 import { Toaster } from "@/components/ui/sonner";
 import { BRAND_NAME } from "@/lib/constants";
+import { LanguageProvider } from "@/lib/language";
 
 const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -43,6 +44,20 @@ export const metadata: Metadata = {
     title: `${BRAND_NAME} - AI Product Studio`,
     description: "Buat foto produk affiliate lebih menarik, premium, dan siap jual dengan bantuan AI.",
   },
+  icons: {
+    icon: [
+      {
+        url: "/images/brand/dowa-logo.png",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/images/brand/dowa-logo.png",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -53,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="id" className="dark">
       <body className={`${sans.variable} font-sans`}>
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
         <Suspense fallback={null}>
           <MetaPixel pixelId={process.env.NEXT_PUBLIC_META_PIXEL_ID} />
         </Suspense>

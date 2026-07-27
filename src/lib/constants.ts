@@ -15,11 +15,11 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Bagaimana cara mulai menggunakan DowaLabs?",
-    a: "Daftar akun, aktifkan paket Pro, buat invoice, transfer ke rekening perusahaan, lalu unggah bukti pembayaran untuk diverifikasi admin.",
+    a: "Daftar akun, aktifkan paket Pro, lalu selesaikan pembayaran melalui halaman checkout DOKU.",
   },
   {
     q: "Apakah akses langsung aktif setelah bayar?",
-    a: "Setelah bukti transfer diunggah, admin akan memverifikasi pembayaran. Akses aktif segera setelah pembayaran disetujui.",
+    a: "Akses aktif otomatis setelah DOKU mengirim konfirmasi pembayaran berhasil.",
   },
   {
     q: "Berapa lama masa aktif membership?",
@@ -31,7 +31,7 @@ export const FAQ_ITEMS = [
   },
   {
     q: "Metode pembayaran apa yang didukung?",
-    a: "Pembayaran dilakukan melalui transfer manual ke rekening perusahaan yang tercantum pada invoice.",
+    a: "Pembayaran dilakukan melalui DOKU Checkout Hosted Payment Page.",
   },
   {
     q: "Apakah data saya aman?",
@@ -48,7 +48,7 @@ export const HOW_IT_WORKS = [
   {
     step: "02",
     title: "Aktifkan Pro dan bayar",
-    desc: "Buat invoice Pro Rp29.900, lalu transfer ke rekening perusahaan.",
+    desc: "Bayar paket Pro Rp29.900 melalui checkout DOKU.",
   },
   {
     step: "03",

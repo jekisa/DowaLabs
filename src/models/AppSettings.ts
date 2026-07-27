@@ -13,9 +13,6 @@ export interface IAppSettings {
   adminWhatsapp: string;
   basicPrice: number;
   proPrice: number;
-  bankName: string;
-  bankAccountNumber: string;
-  bankAccountHolder: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -32,9 +29,6 @@ const AppSettingsSchema = new Schema<IAppSettings>(
     adminWhatsapp: { type: String, default: "" },
     basicPrice: { type: Number, default: 19000 },
     proPrice: { type: Number, default: PRO_PRICE },
-    bankName: { type: String, default: "" },
-    bankAccountNumber: { type: String, default: "" },
-    bankAccountHolder: { type: String, default: "" },
   },
   { timestamps: true }
 );
@@ -73,8 +67,5 @@ export async function getAppSettings(): Promise<IAppSettings> {
       "",
     basicPrice: Number(process.env.DEFAULT_BASIC_PRICE) || 19000,
     proPrice: PRO_PRICE,
-    bankName: process.env.BANK_NAME || "",
-    bankAccountNumber: process.env.BANK_ACCOUNT_NUMBER || "",
-    bankAccountHolder: process.env.BANK_ACCOUNT_HOLDER || "",
   });
 }

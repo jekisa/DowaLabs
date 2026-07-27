@@ -3,7 +3,7 @@ import type { PackageName } from "@/lib/membership";
 
 export interface IPaymentLog {
   _id: mongoose.Types.ObjectId;
-  provider: "lynk";
+  provider: "lynk" | "doku" | "duitku";
   userId: mongoose.Types.ObjectId | null;
   orderId: string | null;
   transactionId: string | null;
@@ -23,7 +23,7 @@ export interface IPaymentLog {
 
 const PaymentLogSchema = new Schema<IPaymentLog>(
   {
-    provider: { type: String, enum: ["lynk"], default: "lynk" },
+    provider: { type: String, enum: ["lynk", "doku", "duitku"], default: "lynk" },
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",

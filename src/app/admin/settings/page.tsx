@@ -11,7 +11,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <AdminPageHeader eyebrow="Configuration" title="Settings" description="Atur lima Gemini Canvas, rekening perusahaan, WhatsApp admin, dan harga paket dari satu tempat." icon={Settings} />
+      <AdminPageHeader eyebrow="Configuration" title="Settings" description="Atur lima Gemini Canvas, WhatsApp admin, dan harga paket dari satu tempat." icon={Settings} />
       <SettingsForm initial={serializeSettings(settings)} />
     </div>
   );

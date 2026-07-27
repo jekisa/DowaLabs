@@ -33,7 +33,7 @@ import {
 
 const ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/payment", label: "Transfer Bank", icon: CreditCard },
+  { href: "/payment", label: "Pembayaran", icon: CreditCard },
 ];
 
 export function UserAreaShell({

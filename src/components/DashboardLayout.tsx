@@ -61,7 +61,7 @@ import {
 
 const NAV_ITEMS: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/payment", label: "Transfer Bank", icon: CreditCard },
+  { href: "/payment", label: "Pembayaran", icon: CreditCard },
 ];
 
 const PROJECTS = [
@@ -80,7 +80,7 @@ const QUICK_ACTIONS: Array<{
   icon: LucideIcon;
   disabled?: boolean;
 }> = [
-    { label: "Transfer Bank", description: "Bayar atau perpanjang", href: "/payment", icon: CreditCard },
+    { label: "Pembayaran", description: "Bayar atau perpanjang", href: "/payment", icon: CreditCard },
     { label: "Tutorial", description: "Pelajari workflow", href: "/demo", icon: BookOpen },
     { label: "Billing", description: "Invoice membership", href: "/payment", icon: ReceiptText },
     { label: "History", description: "Riwayat pembayaran", href: "/payment", icon: History },

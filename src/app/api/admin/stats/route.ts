@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
-import { ManualPayment } from "@/models/ManualPayment";
+import { PaymentLog } from "@/models/PaymentLog";
 import { requireAdmin } from "@/lib/server-auth";
 import { ok, fail } from "@/lib/api";
 
@@ -13,15 +13,14 @@ export async function GET() {
 
   try {
     await connectToDatabase();
-    const [total, active, pending, expired, blocked, payments, unprocessed] =
+    const [total, active, pending, expired, blocked, payments] =
       await Promise.all([
         User.countDocuments({}),
         User.countDocuments({ membershipStatus: "active" }),
         User.countDocuments({ membershipStatus: "pending" }),
         User.countDocuments({ membershipStatus: "expired" }),
         User.countDocuments({ membershipStatus: "blocked" }),
-        ManualPayment.countDocuments({}),
-        ManualPayment.countDocuments({ status: "waiting_verification" }),
+        PaymentLog.countDocuments({ provider: "doku" }),
       ]);
 
     return ok({
@@ -32,7 +31,7 @@ export async function GET() {
         expiredUsers: expired,
         blockedUsers: blocked,
         totalPayments: payments,
-        unprocessedPayments: unprocessed,
+        unprocessedPayments: 0,
       },
     });
   } catch (e) {

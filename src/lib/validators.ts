@@ -74,28 +74,10 @@ export const updateSettingsSchema = z.object({
   promptAiUrl: urlField.optional(),
   adminWhatsapp: phoneInput.optional(),
   proPrice: z.coerce.number().refine((value) => value === PRO_PRICE, "Harga Pro harus Rp29.900").optional(),
-  bankName: z.string().trim().min(2, "Nama bank wajib diisi").max(80).optional(),
-  bankAccountNumber: z
-    .string()
-    .trim()
-    .regex(/^[0-9 -]{5,30}$/, "Nomor rekening tidak valid")
-    .optional(),
-  bankAccountHolder: z
-    .string()
-    .trim()
-    .min(2, "Nama pemilik rekening wajib diisi")
-    .max(100)
-    .optional(),
 });
 
 export const createManualInvoiceSchema = z.object({
   packageName: z.literal("pro").default("pro"),
-});
-
-export const reviewManualPaymentSchema = z.object({
-  action: z.enum(["approve", "reject"]),
-  adminNote: z.string().trim().max(500).optional().default(""),
-  durationMonths: z.coerce.number().int().min(1).max(12).optional(),
 });
 
 export type SignupInput = z.infer<typeof signupSchema>;

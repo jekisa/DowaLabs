@@ -13,12 +13,10 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#f5b942",
     icons: [
       {
-        src: "/favicon.ico",
-        sizes: "any",
-        type: "image/x-icon",
+        src: "/images/brand/dowa-logo.png",
+        sizes: "1024x1024",
+        type: "image/png",
       },
-      // Idealnya Anda bisa menambahkan icon-192x192.png dan icon-512x512.png di folder public
-      // lalu mendaftarkannya di sini.
     ],
   };
 }

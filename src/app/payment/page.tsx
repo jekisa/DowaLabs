@@ -5,9 +5,10 @@ import { PaymentScreen } from "@/components/PaymentScreen";
 import { requireAuth } from "@/lib/auth";
 import { serializeUser } from "@/lib/serialize";
 import { getAppSettings } from "@/models/AppSettings";
-import { ManualPayment } from "@/models/ManualPayment";
-import { serializeManualPayment } from "@/lib/manual-payment";
+import { PaymentInvoice } from "@/models/PaymentInvoice";
+import { serializePaymentInvoice } from "@/lib/payment-invoice";
 import { EMPTY_CANVAS_LINKS } from "@/lib/canvas-tools";
+import { isDuitkuConfigured } from "@/lib/duitku";
 
 export const metadata: Metadata = { title: "Pembayaran" };
 export const dynamic = "force-dynamic";
@@ -17,14 +18,9 @@ export default async function PaymentPage() {
   if (!user) redirect("/login?from=/payment");
 
   const settings = await getAppSettings();
-  const invoices = await ManualPayment.find({ userId: user._id })
+  const invoices = await PaymentInvoice.find({ userId: user._id })
     .sort({ createdAt: -1 })
     .limit(20);
-  const bankName = settings.bankName || process.env.BANK_NAME || "";
-  const bankAccountNumber =
-    settings.bankAccountNumber || process.env.BANK_ACCOUNT_NUMBER || "";
-  const bankAccountHolder =
-    settings.bankAccountHolder || process.env.BANK_ACCOUNT_HOLDER || "";
   const canvasLinks = serializeUser(user).canAccessCanvas
     ? {
         productStudio: settings.canvasUrl || null,
@@ -41,12 +37,10 @@ export default async function PaymentPage() {
         user={serializeUser(user)}
         settings={{
           proPrice: settings.proPrice,
-          bankConfigured: Boolean(
-            bankName && bankAccountNumber && bankAccountHolder
-          ),
+          dokuConfigured: isDuitkuConfigured(),
           canvasLinks,
         }}
-        initialInvoices={invoices.map(serializeManualPayment)}
+        initialInvoices={invoices.map(serializePaymentInvoice)}
       />
     </Suspense>
   );
