@@ -66,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className="dark">
+    <html lang="id" className="dark" data-scroll-behavior="smooth">
       <body className={`${sans.variable} font-sans`}>
         <LanguageProvider>{children}</LanguageProvider>
         <Suspense fallback={null}>
