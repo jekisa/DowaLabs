@@ -45,10 +45,14 @@ const bentoFeatures = (language) => [
     title: "Product Studio",
     description: language === "id" ? "Ubah foto produk biasa menjadi visual studio premium untuk marketplace dan sosial media." : "Turn ordinary product photos into premium studio visuals for marketplaces and social media.",
     icon: Camera,
-    image: "/images/showcase/powcan_tumbler.jpg",
-    // square packshot on white in a wide band: cover would show a horizontal
-    // slice of the bottle, contain keeps the whole product and reads as a float.
-    imagePosition: "object-contain object-center",
+    // powcan_tumbler.jpg (447x447 / 12KB) was the weakest asset on the page and
+    // needed object-contain, which left the product floating in white. This is the
+    // only pure product shot in the set at full resolution (768x1376 / 862KB) -
+    // every other -after file is a model holding the product.
+    image: "/images/showcase/watch-after2.jpg",
+    // cover, not contain: centred, the crop lands on the watch face with the
+    // styled flat-lay filling the rest of the band.
+    imagePosition: "object-center",
     href: "/demo",
     className: "md:col-span-4 md:min-h-[220px]",
   },
