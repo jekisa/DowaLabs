@@ -1,42 +1,70 @@
+export const PRO_PRICE_LABEL = "Rp99.000";
+export const PRO_PRICE_STRIKE = "Rp200.000";
+
+export const heroPricing = {
+  id: {
+    line: `Semua tool kreatif — ${PRO_PRICE_LABEL} untuk 30 hari`,
+    cta: `Mulai Sekarang — ${PRO_PRICE_LABEL}`,
+  },
+  en: {
+    line: `All creative tools — ${PRO_PRICE_LABEL} for 30 days`,
+    cta: `Start Now — ${PRO_PRICE_LABEL}`,
+  },
+};
+
 export const socialProof = {
-  generatedImages: "12.800+",
-  activeUsers: "430+",
-  rating: "4,9/5",
-  logos: ["Shopee", "Tokopedia", "TikTok Shop", "Lazada", "Blibli", "Bukalapak"],
+  generatedImages: "",
+  activeUsers: "",
+  rating: "",
+  logos: ["Shopee", "Tokopedia", "TikTok Shop", "Blibli"],
 };
 
 export const showcaseCategories = [
   {
     id: "fashion",
     label: "Fashion",
+    labelEn: "Fashion",
     before: "/images/showcase/tshirt-before.jpg",
     after: "/images/showcase/tshirt-after1.jpg",
     alt: "Transformasi foto kaus menjadi visual fashion siap posting",
+    // portrait source in a square frame: anchor top so the model's head survives
+    focus: "center top",
   },
   {
     id: "skincare",
-    label: "Skincare",
+    label: "Snack",
+    labelEn: "Snack",
     before: "/images/showcase/kacang-before.jpg",
     after: "/images/showcase/kacang-after2.jpg",
-    alt: "Transformasi foto skincare menjadi visual campaign premium",
+    alt: "Transformasi foto kemasan snack kacang menjadi visual campaign premium",
+    // head and the whole pack span 1110px of a 768px-wide source, so they cannot
+    // both fit a square frame. 14% keeps the head whole and lifts the pack from
+    // ~12% to ~33%, far enough for "KACANG GARING" to read.
+    focus: "center 14%",
   },
   {
     id: "food",
     label: "Food",
+    labelEn: "Food",
     before: "/images/showcase/kopi-before.jpeg",
     after: "/images/showcase/kopi-after1.jpg",
     alt: "Transformasi foto kopi menjadi konten produk F&B",
   },
   {
     id: "furniture",
-    label: "Furniture",
+    label: "Kemasan",
+    labelEn: "Packaging",
     before: "/images/showcase/snack-before.jpg",
     after: "/images/showcase/snack-after4.jpg",
-    alt: "Transformasi foto furniture menjadi visual lifestyle",
+    alt: "Transformasi foto kemasan basreng menjadi visual lifestyle",
+    // same trade as skincare. 16% is the ceiling before the crown of the head
+    // touches the top edge; it is also where "kylafood / Basreng" becomes legible.
+    focus: "center 16%",
   },
   {
     id: "accessories",
     label: "Accessories",
+    labelEn: "Accessories",
     before: "/images/showcase/watch-before.jpeg",
     after: "/images/showcase/watch-after1.jpg",
     alt: "Transformasi foto jam tangan menjadi visual premium",
@@ -44,10 +72,24 @@ export const showcaseCategories = [
   {
     id: "electronics",
     label: "Electronics",
+    labelEn: "Electronics",
     before: "/images/showcase/watch-before.jpeg",
     after: "/images/showcase/watch-after4.jpg",
     alt: "Transformasi foto elektronik menjadi visual marketplace",
   },
+];
+
+// the "Yang bisa dibuat" thumbnail panel was dropped from the page when the
+// tools section gave its right column to the testimonials; kept here on purpose.
+export const galleryFormats = [
+  { label: "Marketplace", src: "/images/showcase/tshirt-after1.jpg" },
+  { label: "Instagram Feed", src: "/images/showcase/kopi-after2.jpg" },
+  { label: "Banner", src: "/images/showcase/watch-after4.jpg" },
+  { label: "Poster", src: "/images/showcase/snack-after4.jpg" },
+  { label: "Portrait", src: "/images/showcase/Character_1.jpg" },
+  { label: "Lifestyle", src: "/images/showcase/tumbler-after1.jpg" },
+  { label: "Shopee", src: "/images/showcase/kacang-after3.jpg" },
+  { label: "TikTok Shop", src: "/images/showcase/watch-after2.jpg" },
 ];
 
 export const heroResults = [
@@ -90,9 +132,9 @@ export const pricingTiers = [
   },
   {
     name: "Pro",
-    price: "Rp29.900",
-    originalPrice: "Rp60.000",
-    period: "/ bulan",
+    price: "Rp99.000",
+    originalPrice: PRO_PRICE_STRIKE,
+    period: " untuk 30 hari",
     description: "Untuk seller yang butuh banyak variasi konten siap posting setiap minggu.",
     cta: "Aktifkan Pro Sekarang",
     href: "/payment",
@@ -109,7 +151,7 @@ export const pricingTiers = [
   {
     name: "Business",
     price: "Rp99.000",
-    originalPrice: "Rp199.000",
+    originalPrice: PRO_PRICE_STRIKE,
     period: "/ bulan",
     description: "Untuk toko dengan banyak SKU dan kebutuhan konten rutin.",
     cta: "Pilih Business",
@@ -121,7 +163,7 @@ export const pricingTiers = [
 export const valueStack = [
   { label: "Jasa desain manual 10 konten", value: "Rp150rb - Rp500rb" },
   { label: "Foto ulang produk sederhana", value: "Rp300rb+" },
-  { label: "DowaLabs Pro", value: "Rp29.900/bulan" },
+  { label: "DowaLabs Pro", value: "Rp99.000 untuk 30 hari" },
 ];
 
 export const testimonials = [

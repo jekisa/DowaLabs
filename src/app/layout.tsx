@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import { MetaPixel } from "@/components/MetaPixel";
@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { BRAND_NAME } from "@/lib/constants";
 import { LanguageProvider } from "@/lib/language";
 
-const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans" });
+const sans = Manrope({ subsets: ["latin"], variable: "--font-sans" });
 
 export const viewport: Viewport = {
   themeColor: "#070810",
@@ -66,7 +66,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className="dark" data-scroll-behavior="smooth">
+    <html lang="id" data-scroll-behavior="smooth">
       <body className={`${sans.variable} font-sans`}>
         <LanguageProvider>{children}</LanguageProvider>
         <Suspense fallback={null}>

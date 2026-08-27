@@ -73,7 +73,7 @@ export const updateSettingsSchema = z.object({
   portraitStyleUrl: urlField.optional(),
   promptAiUrl: urlField.optional(),
   adminWhatsapp: phoneInput.optional(),
-  proPrice: z.coerce.number().refine((value) => value === PRO_PRICE, "Harga Pro harus Rp29.900").optional(),
+  proPrice: z.coerce.number().refine((value) => value === PRO_PRICE, "Harga Pro harus Rp99.000").optional(),
 });
 
 export const createManualInvoiceSchema = z.object({

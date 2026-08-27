@@ -1,23 +1,28 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  BadgeCheck,
-  Check,
+  BookOpen,
+  Camera,
   ChevronDown,
   Download,
+  Eraser,
   ImagePlus,
-  Play,
-  Sparkles,
+  Palette,
+  UserRound,
   WandSparkles,
-  Zap,
 } from "lucide-react";
-import { BeforeAfterSlider } from "@/components/landing/before-after-slider";
-import { showcaseCategories, socialProof } from "@/components/landing/landing-data";
+import { PRO_PRICE_LABEL, PRO_PRICE_STRIKE } from "@/components/landing/landing-data";
 import { WhatsappHelp } from "@/components/landing/whatsapp-help";
+import { HeroMinimalism } from "@/components/ui/hero-minimalism";
+import { FeedbackChatStack } from "@/components/ui/feedback-chat-stack";
+import { BentoGrid } from "@/components/ui/bento-grid";
+import { SinglePricingCard } from "@/components/ui/single-pricing-card";
+import { SocialProofCards } from "@/components/ui/social-proof-cards";
 import { useLanguage } from "@/lib/language";
 import styles from "./conversion-landing.module.css";
 
@@ -26,30 +31,65 @@ const fadeUp = {
   visible: { opacity: 1, y: 0 },
 };
 
-const gallery = [
-  { label: "Marketplace", src: "/images/showcase/tshirt-after1.jpg" },
-  { label: "Instagram Feed", src: "/images/showcase/kopi-after2.jpg" },
-  { label: "Banner", src: "/images/showcase/watch-after4.jpg" },
-  { label: "Poster", src: "/images/showcase/snack-after4.jpg" },
-  { label: "Portrait", src: "/images/showcase/Character_1.jpg" },
-  { label: "Lifestyle", src: "/images/showcase/tumbler-after1.jpg" },
-  { label: "Shopee", src: "/images/showcase/kacang-after3.jpg" },
-  { label: "TikTok Shop", src: "/images/showcase/watch-after2.jpg" },
+const marketplaceLogos = [
+  ["Shopee", "/images/marketplace/Shopee-wide.svg"],
+  // square 960x960 original on purpose: the -wide file was a composed lockup, not brand art
+  ["Tokopedia", "/images/marketplace/Tokopedia.svg"],
+  ["TikTok Shop", "/images/marketplace/Tiktok-wide.svg"],
+  ["Blibli", "/images/marketplace/Blibli-wide.svg"],
+  ["Lazada", "/images/marketplace/Lazada-wide.svg"],
 ];
 
-const included = [
-  "Product Studio",
-  "AI Background",
-  "AI Portrait",
-  "Color Grading",
-  "AI Prompt Library",
-  "New Features",
-  "Browser Based",
+const bentoFeatures = (language) => [
+  {
+    title: "Product Studio",
+    description: language === "id" ? "Ubah foto produk biasa menjadi visual studio premium untuk marketplace dan sosial media." : "Turn ordinary product photos into premium studio visuals for marketplaces and social media.",
+    icon: Camera,
+    image: "/images/showcase/powcan_tumbler.jpg",
+    // square packshot on white in a wide band: cover would show a horizontal
+    // slice of the bottle, contain keeps the whole product and reads as a float.
+    imagePosition: "object-contain object-center",
+    href: "/demo",
+    className: "md:col-span-4 md:min-h-[220px]",
+  },
+  {
+    title: "Background Remover",
+    description: language === "id" ? "Hapus background dengan cepat dan siapkan produk untuk katalog, banner, atau desain baru." : "Remove backgrounds quickly and prepare products for catalogs, banners, or new designs.",
+    icon: Eraser,
+    image: "/images/showcase/watch-after3.jpg",
+    className: "md:col-span-2",
+  },
+  {
+    title: "Color Grading",
+    description: language === "id" ? "Perbaiki tone, warna, dan nuansa visual agar konten terlihat lebih profesional dan konsisten." : "Refine tone, color, and visual mood for more professional and consistent content.",
+    icon: Palette,
+    image: "/images/showcase/kopi-after4.jpg",
+    className: "md:col-span-2",
+  },
+  {
+    title: "Portrait Style",
+    description: language === "id" ? "Buat portrait dengan gaya visual berbeda untuk campaign, personal branding, dan konten kreatif." : "Create portraits in different visual styles for campaigns, personal branding, and creative content.",
+    icon: UserRound,
+    image: "/images/showcase/Character_5.jpg",
+    className: "md:col-span-2 md:min-h-[220px]",
+  },
+  {
+    title: "5.000+ Prompt AI",
+    description: language === "id" ? "Gunakan koleksi prompt siap pakai untuk mempercepat ide dan produksi visual dengan AI." : "Use a ready-to-use prompt library to accelerate ideas and AI visual production.",
+    icon: BookOpen,
+    image: "/images/showcase/Character_1.jpg",
+    // tight headshot: 14% skips the empty band above the hair without reaching the
+    // chin. object-bottom used to sit here, which only worked while the image
+    // filled the whole card; against the real photo box it framed the chest.
+    imagePosition: "object-[50%_14%]",
+    href: "/signup",
+    className: "md:col-span-2 md:min-h-[220px]",
+  },
 ];
 
 const copy = {
   id: {
-    cta: "Mulai Sekarang - Rp29.900/bulan",
+    cta: "Mulai Sekarang - Rp99.000 untuk 30 hari",
     kicker: "AI Product Studio untuk seller online",
     headline: "Ubah foto produk biasa menjadi gambar studio premium dalam 10 detik.",
     subheadline:
@@ -68,23 +108,50 @@ const copy = {
     },
     steps: {
       eyebrow: "Cara kerja",
-      title: "Upload. Pilih. Download.",
-      labels: ["Upload Foto", "Pilih Style", "Download"],
+      title: "Cara Kerja DowaLabs",
+      labels: ["Upload Foto", "Pilih Style", "Generate", "Download"],
+      descriptions: [
+        "Foto seadanya dari HP sudah cukup. Tanpa kamera, tripod, atau lampu studio.",
+        "Klik satu style yang cocok. Tidak ada layer, mask, atau setting yang perlu diatur.",
+        "AI bekerja sekitar 10 detik. Kamu tidak menunggu antrean revisi siapa pun.",
+        "Hasilnya langsung terunduh dalam ukuran yang siap dipakai di marketplace.",
+      ],
     },
     gallery: {
       eyebrow: "Yang bisa dibuat",
       title: "Satu langganan. Semua format jualan.",
     },
+    feedback: {
+      eyebrow: "Contoh percakapan support",
+      title: "Ada yang bingung? Kami balas.",
+    },
     value: {
-      eyebrow: "Kenapa bayar Rp29.900?",
+      eyebrow: "Kenapa bayar Rp99.000?",
       title: "Karena konten manual lebih lambat dan lebih mahal.",
       oldTime: "Jam atau hari",
-      newValue: "10 detik. Rp29.900/bulan.",
+      newValue: "10 detik. Rp99.000 untuk 30 hari.",
       newCopy: "Cepat, konsisten, dan praktis untuk kebutuhan konten jualan harian.",
+      bullets: [
+        "Studio foto, designer, atau Photoshop butuh jam sampai hari untuk satu set konten.",
+        `DowaLabs butuh 10 detik per visual, ${PRO_PRICE_LABEL} untuk 30 hari.`,
+        `Harga normal ${PRO_PRICE_STRIKE}. Satu langganan membuka semua tool, tanpa biaya per proyek.`,
+        "Hasil konsisten untuk marketplace, sosial media, katalog, dan iklan.",
+      ],
+      cardTrust: [
+        "Tidak ada auto-debit. Kalau kamu diam saja, akses berhenti sendiri di hari ke-31.",
+        `Tidak ada tagihan per foto, per proyek, atau per tool — ${PRO_PRICE_LABEL} sudah angka final.`,
+        "Setiap tool terbuka penuh selama membership aktif, termasuk fitur yang baru rilis.",
+      ],
+      trustEyebrow: "Sebelum kamu bayar",
+      trust: [
+        "Tidak ada auto-debit. Kalau kamu diam saja, akses berhenti sendiri di hari ke-31.",
+        `Yang keluar dari dompet cuma ${PRO_PRICE_LABEL}. Tidak ada tagihan per foto, per proyek, atau per tool.`,
+        "Selama membership aktif, setiap tool terbuka penuh — termasuk fitur yang baru rilis, tanpa upgrade.",
+      ],
     },
     pricing: {
       title: "Semua Termasuk.",
-      period: "/bulan",
+      period: " untuk 30 hari",
       cta: "Subscribe Sekarang",
     },
     faq: {
@@ -95,18 +162,25 @@ const copy = {
         ["Perlu Photoshop?", "Tidak. Upload foto, pilih style, lalu download hasilnya dari browser."],
         ["Perlu skill desain?", "Tidak. DowaLabs dibuat untuk seller yang butuh visual premium tanpa belajar tool desain."],
         ["Bisa dipakai komersial?", "Bisa. Hasil dibuat untuk listing toko, iklan, katalog, dan konten sosial media."],
-        ["Ada biaya tersembunyi?", "Tidak. Hanya satu paket: Rp29.900/bulan."],
+        ["Ada biaya tersembunyi?", "Tidak. Hanya satu paket: Rp99.000 untuk 30 hari."],
+      ],
+      // rendered list: 4 questions, Photoshop + skill desain merged into one
+      shortlist: [
+        ["Bisa dibatalkan kapan saja?", "Ya. Langganan berjalan bulanan, jadi kamu tetap punya kontrol."],
+        ["Perlu Photoshop atau skill desain?", "Tidak keduanya. Upload foto, pilih style, lalu download hasilnya langsung dari browser. DowaLabs dibuat untuk seller yang butuh visual premium tanpa belajar tool desain."],
+        ["Bisa dipakai komersial?", "Bisa. Hasil dibuat untuk listing toko, iklan, katalog, dan konten sosial media."],
+        ["Ada biaya tersembunyi?", `Tidak. Hanya satu paket: ${PRO_PRICE_LABEL} untuk 30 hari.`],
       ],
     },
     final: {
       pre: "Berhenti menghabiskan waktu berjam-jam untuk edit foto produk.",
       title: "Biarkan AI mengerjakannya.",
-      price: "Rp29.900/bulan.",
+      price: "Rp99.000 untuk 30 hari",
       cta: "Mulai Sekarang",
     },
   },
   en: {
-    cta: "Start Now - Rp29.900/month",
+    cta: "Start Now - Rp99.000 for 30 days",
     kicker: "AI Product Studio for online sellers",
     headline: "Transform ordinary product photos into studio quality images in 10 seconds.",
     subheadline:
@@ -125,23 +199,50 @@ const copy = {
     },
     steps: {
       eyebrow: "How it works",
-      title: "Upload. Choose. Download.",
-      labels: ["Upload Photo", "Choose Style", "Download"],
+      title: "How DowaLabs Works",
+      labels: ["Upload Photo", "Choose Style", "Generate", "Download"],
+      descriptions: [
+        "A plain phone photo is enough. No camera, tripod, or studio lighting.",
+        "Click one style that fits. No layers, masks, or settings to configure.",
+        "The AI works in about 10 seconds. You wait on nobody's revision queue.",
+        "The file downloads straight away, already sized for your marketplace.",
+      ],
     },
     gallery: {
       eyebrow: "What you can create",
       title: "One subscription. Every selling format.",
     },
+    feedback: {
+      eyebrow: "Sample support chat",
+      title: "Stuck on something? We answer.",
+    },
     value: {
-      eyebrow: "Why pay Rp29.900?",
+      eyebrow: "Why pay Rp99.000?",
       title: "Because manual content is slower and more expensive.",
       oldTime: "Hours or days",
-      newValue: "10 seconds. Rp29.900/month.",
+      newValue: "10 seconds. Rp99.000 for 30 days.",
       newCopy: "Speed, consistency, and unlimited convenience for daily selling content.",
+      bullets: [
+        "A photo studio, a designer, or Photoshop takes hours or days for one content set.",
+        `DowaLabs takes 10 seconds per visual, ${PRO_PRICE_LABEL} for 30 days.`,
+        `Normally ${PRO_PRICE_STRIKE}. One subscription unlocks every tool, with no per-project fee.`,
+        "Consistent output for marketplaces, social media, catalogs, and ads.",
+      ],
+      cardTrust: [
+        "No auto-debit. Do nothing and your access simply stops on day 31.",
+        `No per-photo, per-project, or per-tool billing — ${PRO_PRICE_LABEL} is the final number.`,
+        "Every tool stays fully open while your membership runs, newly shipped features included.",
+      ],
+      trustEyebrow: "Before you pay",
+      trust: [
+        "No auto-debit. Do nothing and your access simply stops on day 31.",
+        `Only ${PRO_PRICE_LABEL} ever leaves your wallet. No per-photo, per-project, or per-tool billing.`,
+        "While your membership runs, every tool is fully open — newly shipped features included, no upgrade.",
+      ],
     },
     pricing: {
       title: "Everything Included.",
-      period: "/month",
+      period: " for 30 days",
       cta: "Subscribe Now",
     },
     faq: {
@@ -152,22 +253,29 @@ const copy = {
         ["Do I need Photoshop?", "No. Upload a photo, choose a style, and download the result from your browser."],
         ["Do I need design skills?", "No. DowaLabs is built for sellers who need premium visuals without learning design tools."],
         ["Can I use commercially?", "Yes. Generated visuals are made for store listings, ads, catalogs, and social content."],
-        ["Any hidden fees?", "No. One plan only: Rp29.900/month."],
+        ["Any hidden fees?", "No. One plan only: Rp99.000 for 30 days."],
+      ],
+      // rendered list: 4 questions, Photoshop + design skills merged into one
+      shortlist: [
+        ["Can I cancel anytime?", "Yes. Your subscription is monthly, so you stay in control."],
+        ["Do I need Photoshop or design skills?", "Neither. Upload a photo, choose a style, and download the result straight from your browser. DowaLabs is built for sellers who need premium visuals without learning design tools."],
+        ["Can I use commercially?", "Yes. Generated visuals are made for store listings, ads, catalogs, and social content."],
+        ["Any hidden fees?", `No. One plan only: ${PRO_PRICE_LABEL} for 30 days.`],
       ],
     },
     final: {
       pre: "Stop spending hours editing product photos.",
       title: "Let AI do it for you.",
-      price: "Rp29.900/month.",
+      price: "Rp99.000 for 30 days",
       cta: "Start Now",
     },
   },
 };
 
-function SectionIntro({ eyebrow, title, copy }) {
+function SectionIntro({ eyebrow, title, copy, className = "" }) {
   return (
     <motion.div
-      className={styles.sectionIntro}
+      className={`${styles.sectionIntro} ${className}`}
       variants={fadeUp}
       initial="hidden"
       whileInView="visible"
@@ -196,191 +304,106 @@ function CtaButton({ children, className = "" }) {
 export function ConversionLanding() {
   const { language } = useLanguage();
   const text = copy[language];
+  // the hero already carries a full-size CTA; showing the sticky one on top of it
+  // just gives the first screen two competing buttons.
+  const [pastHero, setPastHero] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setPastHero(window.scrollY > window.innerHeight * 0.85);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero}>
-        <div className={styles.heroCopy}>
-          <motion.p className={styles.kicker} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            {text.kicker}
-          </motion.p>
-          <motion.h1 initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            {text.headline}
-          </motion.h1>
-          <motion.p
-            className={styles.heroSub}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-          >
-            {text.subheadline}
-          </motion.p>
-          <motion.div
-            className={styles.heroActions}
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.18 }}
-          >
-            <CtaButton />
-            <Link className={styles.secondaryCta} href="/demo">
-              <Play size={18} />
-              {text.demo}
-            </Link>
-          </motion.div>
-          <motion.div
-            className={styles.heroProof}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.32 }}
-          >
-            <span>{socialProof.generatedImages} {text.proof.images}</span>
-            <span>{socialProof.activeUsers} {text.proof.sellers}</span>
-            <span>{socialProof.rating} {text.proof.rating}</span>
-          </motion.div>
-        </div>
+      {/* 1. HERO */}
+      <HeroMinimalism />
 
-        <motion.div
-          className={styles.demoShell}
-          id="demo"
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.12 }}
-        >
-          <div className={styles.demoHeader}>
-            <span>Before</span>
-            <Zap size={16} />
-            <span>AI</span>
-            <Zap size={16} />
-            <span>After</span>
-          </div>
-          <video className={styles.demoVideo} src="/videos/demo-tumbler.mp4" autoPlay muted loop playsInline poster="/images/showcase/tumbler-after1.jpg" />
-        </motion.div>
-      </section>
-
+      {/* 1b. Marketplace trust strip */}
       <section className={styles.proof}>
         <div className={styles.proofText}>{text.proof.trust}</div>
-        <div className={styles.logoRow}>
-          {socialProof.logos.map((logo) => (
-            <span key={logo}>{logo}</span>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.section} id="examples">
-        <SectionIntro eyebrow={text.beforeAfter.eyebrow} title={text.beforeAfter.title} copy={text.beforeAfter.copy} />
-        <div className={styles.sliderGrid}>
-          <BeforeAfterSlider before={showcaseCategories[0].before} after={showcaseCategories[0].after} alt={showcaseCategories[0].alt} priority />
-          <div className={styles.categoryStack}>
-            {showcaseCategories.map((item) => (
-              <div className={styles.categoryPill} key={item.id}>
-                <span>{item.label}</span>
-                <Image src={item.after} alt={item.alt} width={86} height={64} />
-              </div>
+        <div className={styles.marqueeViewport} aria-label="Marketplace yang didukung">
+          <div className={styles.logoRow}>
+            {[...marketplaceLogos, ...marketplaceLogos].map(([label, src], index) => (
+              <span key={`${label}-${index}`}><Image src={src} alt={`${label} logo`} width={140} height={46} className={`${styles.marketplaceLogo} ${src.includes("-wide") ? "" : styles.marketplaceLogoSquare}`} /></span>
             ))}
           </div>
         </div>
       </section>
 
-      <section className={styles.stepsSection}>
-        <SectionIntro eyebrow={text.steps.eyebrow} title={text.steps.title} />
-        <div className={styles.steps}>
-          {[
-            [ImagePlus, text.steps.labels[0]],
-            [WandSparkles, text.steps.labels[1]],
-            [Download, text.steps.labels[2]],
-          ].map(([Icon, label], index) => (
-            <motion.div className={styles.step} key={label} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
-              <Icon size={30} />
-              <strong>{label}</strong>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* 2. TOOLS + UNTUK SIAPA + TESTIMONI */}
+      <section className={`${styles.sectionBlock} ${styles.sectionBlockAlt}`} id="features">
+        <div className={`${styles.shell} ${styles.featuresGrid}`}>
+          <div className={styles.featuresMain}>
+            <SectionIntro
+              className={styles.sectionIntroLeft}
+              eyebrow="DowaLabs"
+              title={language === "id" ? "Semua Tool Kreatif dalam Satu Workspace." : "All Your Creative Tools in One Workspace."}
+              copy={language === "id" ? "Dari foto produk hingga portrait dan prompt AI, semua dirancang untuk mempercepat produksi konten." : "From product photos to portraits and AI prompts, everything is designed to accelerate content production."}
+            />
+            <BentoGrid items={bentoFeatures(language)} ctaLabel={language === "id" ? "Jelajahi Fitur" : "Explore Feature"} />
 
-      <section className={styles.section} id="gallery">
-        <SectionIntro eyebrow={text.gallery.eyebrow} title={text.gallery.title} />
-        <div className={styles.gallery}>
-          {gallery.map((item, index) => (
-            <motion.figure
-              key={item.label}
-              className={styles.galleryItem}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: (index % 4) * 0.04 }}
-              whileHover={{ scale: 1.025 }}
-            >
-              <Image src={item.src} alt={`${item.label} example created with DowaLabs`} fill sizes="(max-width: 768px) 50vw, 25vw" />
-              <figcaption>{item.label}</figcaption>
-            </motion.figure>
-          ))}
-        </div>
-      </section>
-
-      <section className={styles.valueSection}>
-        <SectionIntro eyebrow={text.value.eyebrow} title={text.value.title} />
-        <div className={styles.valueGrid}>
-          {["Studio Photography", "Designer", "Photoshop", "Freelancer"].map((item) => (
-            <div className={styles.oldWay} key={item}>
-              <span>{item}</span>
-              <strong>{text.value.oldTime}</strong>
+            <div className={styles.whoBlock}>
+              <SectionIntro
+                className={styles.sectionIntroLeft}
+                eyebrow={language === "id" ? "UNTUK SIAPA DOWALABS?" : "WHO IS DOWALABS FOR?"}
+                title={language === "id" ? "Dibuat untuk Konten yang Harus Bergerak Cepat." : "Built for Content That Needs to Move Fast."}
+                copy={language === "id" ? "Satu creative suite untuk seller, creator, dan tim marketing yang membutuhkan visual berkualitas tanpa workflow yang rumit." : "One creative suite for sellers, creators, and marketing teams that need quality visuals without a complicated workflow."}
+              />
+              <SocialProofCards language={language} />
             </div>
-          ))}
-          <div className={styles.newWay}>
-            <Sparkles size={28} />
-            <span>DowaLabs</span>
-            <strong>{text.value.newValue}</strong>
-            <p>{text.value.newCopy}</p>
           </div>
+
+          <aside className={styles.featuresAside}>
+            <SectionIntro className={styles.sectionIntroLeft} eyebrow={text.feedback.eyebrow} title={text.feedback.title} />
+            <FeedbackChatStack />
+          </aside>
         </div>
       </section>
 
-      <section className={styles.pricingSection} id="pricing">
-        <motion.div className={styles.priceCard} variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={{ duration: 0.55 }}>
-          <BadgeCheck size={32} />
-          <h2>{text.pricing.title}</h2>
-          <div className={styles.price}>Rp29.900<span>{text.pricing.period}</span></div>
-          <div className={styles.included}>
-            {included.map((item) => (
-              <span key={item}>
-                <Check size={16} />
-                {item}
-              </span>
+      {/* 3. CARA KERJA */}
+      <section className={`${styles.sectionBlock} ${styles.sectionBlockAlt}`}>
+        <div className={styles.shell}>
+          <SectionIntro className={styles.sectionIntroLeft} eyebrow={text.steps.eyebrow} title={text.steps.title} />
+          <div className={`${styles.steps} ${styles.stepsCompact}`}>
+            {[ImagePlus, Palette, WandSparkles, Download].map((Icon, index) => (
+              <motion.div className={styles.step} key={text.steps.labels[index]} whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
+                <Icon size={30} />
+                <strong>{text.steps.labels[index]}</strong>
+                <p>{text.steps.descriptions[index]}</p>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+              </motion.div>
             ))}
           </div>
-          <CtaButton className={styles.wideCta}>{text.pricing.cta}</CtaButton>
-        </motion.div>
-      </section>
-
-      <section className={styles.section} id="faq">
-        <SectionIntro eyebrow={text.faq.eyebrow} title={text.faq.title} />
-        <div className={styles.faqList}>
-          {text.faq.items.map(([question, answer]) => (
-            <details key={question} className={styles.faqItem}>
-              <summary>
-                {question}
-                <ChevronDown size={18} />
-              </summary>
-              <p>{answer}</p>
-            </details>
-          ))}
         </div>
       </section>
 
-      <section className={styles.finalCta}>
-        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} transition={{ duration: 0.55 }}>
-          <p>{text.final.pre}</p>
-          <h2>{text.final.title}</h2>
-          <strong>{text.final.price}</strong>
-          <CtaButton className={styles.finalButton}>{text.final.cta}</CtaButton>
-        </motion.div>
+      {/* 4. PAKET DOWALABS + FAQ */}
+      <section className={styles.sectionBlock} id="pricing">
+        <div className={`${styles.shell} ${styles.pricingGrid}`}>
+          <SinglePricingCard language={language} trustPoints={text.value.cardTrust} />
+          {/* the anchor moved off the deleted section onto this wrapper so the
+              navbar's /#faq link still lands on the questions. */}
+          <div className={styles.faqAside} id="faq">
+            <SectionIntro className={styles.sectionIntroLeft} eyebrow={text.faq.eyebrow} title={text.faq.title} />
+            <div className={styles.faqList}>
+              {text.faq.shortlist.map(([question, answer], index) => (
+                <details key={question} open={index === 0} className={styles.faqItem}>
+                  <summary>{question}<ChevronDown size={18} /></summary>
+                  <p>{answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
-      <div className={styles.stickyCta}>
-        <span>Rp29.900{text.pricing.period}</span>
-        <CtaButton>{text.final.cta}</CtaButton>
-      </div>
+      {pastHero ? (
+        <div className={styles.stickyCta}>
+          <span>{PRO_PRICE_LABEL}/30 {language === "id" ? "hari" : "days"}</span>
+          <CtaButton>{text.final.cta}</CtaButton>
+        </div>
+      ) : null}
       <WhatsappHelp number="082298062959" />
     </div>
   );

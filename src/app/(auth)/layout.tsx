@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { BRAND_NAME } from "@/lib/constants";
 
@@ -7,6 +10,12 @@ export default function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isAuthRedesign = ["/login", "/signup"].includes(usePathname());
+
+  if (isAuthRedesign) {
+    return <div className="relative min-h-screen overflow-hidden bg-white px-3 py-3 sm:px-4 sm:py-4">{children}</div>;
+  }
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-12">
       <div className="pointer-events-none absolute inset-0 bg-grid-pattern bg-[size:48px_48px] opacity-30" />

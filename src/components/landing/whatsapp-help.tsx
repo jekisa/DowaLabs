@@ -111,14 +111,16 @@ export function WhatsappHelp({ number }: { number: string }) {
         aria-expanded={open}
         aria-controls="whatsapp-help-panel"
         aria-label={open ? "Tutup bantuan WhatsApp" : "Tanya admin via WhatsApp"}
-        className="group flex h-14 items-center gap-2.5 rounded-full bg-[#25D366] px-4 text-sm font-semibold text-[#062d18] shadow-lg shadow-emerald-950/40 transition hover:-translate-y-0.5 hover:bg-[#38e477] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05060b] sm:h-16 sm:px-5"
+        className="group flex h-14 w-14 items-center justify-center gap-0 rounded-full bg-[#25D366] px-0 text-sm font-semibold text-[#062d18] shadow-lg shadow-emerald-950/40 transition-all hover:-translate-y-0.5 hover:bg-[#38e477] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#05060b] sm:h-16 sm:w-16 sm:hover:w-auto sm:hover:gap-2.5 sm:hover:px-5 sm:focus-visible:w-auto sm:focus-visible:gap-2.5 sm:focus-visible:px-5"
       >
         {open ? (
-          <X className="h-6 w-6" aria-hidden="true" />
+          <X className="h-6 w-6 shrink-0" aria-hidden="true" />
         ) : (
-          <MessageCircle className="h-6 w-6" aria-hidden="true" />
+          <MessageCircle className="h-6 w-6 shrink-0" aria-hidden="true" />
         )}
-        <span className="hidden sm:inline">Tanya Admin</span>
+        {/* label was a permanent 156px bar sitting on top of page content;
+            it now only expands on hover/focus, desktop only. */}
+        <span className="hidden whitespace-nowrap sm:group-hover:inline sm:group-focus-visible:inline">Tanya Admin</span>
       </button>
     </div>
   );

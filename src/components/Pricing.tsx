@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const plan = {
   name: "Pro",
-  price: "Rp29.900",
+  price: "Rp99.000",
   daily: "hanya Rp1.000/hari",
   href: "/signup",
   cta: "Mulai dengan Pro",

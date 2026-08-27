@@ -48,7 +48,7 @@ export const HOW_IT_WORKS = [
   {
     step: "02",
     title: "Aktifkan Pro dan bayar",
-    desc: "Bayar paket Pro Rp29.900 melalui checkout DOKU.",
+    desc: "Bayar paket Pro Rp99.000 melalui checkout DOKU.",
   },
   {
     step: "03",

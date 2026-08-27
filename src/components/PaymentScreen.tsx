@@ -145,7 +145,7 @@ export function PaymentScreen({
             </div>
             <p className="mt-2 text-xl font-semibold text-amber-300">
               {formatIDR(settings.proPrice)}{" "}
-              <span className="text-xs font-normal text-slate-400">/ 30 hari</span>
+              <span className="text-xs font-normal text-slate-400">untuk 30 hari</span>
             </p>
             <p className="mt-2 text-xs text-slate-400">
               Semua tool premium dan 5.000 prompt siap pakai.
