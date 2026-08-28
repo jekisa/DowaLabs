@@ -19,14 +19,14 @@ const cards: Array<{ title: string; icon: LucideIcon; id: string; en: string }> 
 export function SocialProofCards({ language, className }: SocialProofCardsProps) {
   const reduceMotion = useReducedMotion();
   return (
-    <div className={cn("grid grid-cols-1 gap-4 md:grid-cols-3", className)}>
+    <div className={cn("grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4", className)}>
       {cards.map((card, index) => {
         const Icon = card.icon;
         return (
-          <motion.article key={card.title} initial={reduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.4, delay: reduceMotion ? 0 : index * 0.06 }} className="group rounded-2xl border border-[#e5e7eb] bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md">
+          <motion.article key={card.title} initial={reduceMotion ? false : { opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ duration: 0.4, delay: reduceMotion ? 0 : index * 0.06 }} className="group rounded-2xl border border-[#e5e7eb] bg-white p-4 shadow-sm md:p-5 transition duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-md">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-amber-700 transition group-hover:bg-amber-100"><Icon size={21} strokeWidth={1.8} /></div>
-            <h3 className="mt-6 text-xl font-semibold text-slate-900">{card.title}</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{language === "id" ? card.id : card.en}</p>
+            <h3 className="mt-4 text-xl font-semibold text-slate-900 md:mt-6">{card.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-600 md:mt-3">{language === "id" ? card.id : card.en}</p>
           </motion.article>
         );
       })}

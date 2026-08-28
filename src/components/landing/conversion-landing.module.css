@@ -1415,6 +1415,35 @@
   font-size: clamp(1.55rem, 2.5vw, 2.2rem);
 }
 
+/* Phone-only compaction of the tools section: it ran to 4030px at 390, nearly
+   half the page. Spacing only - no font sizes, no content removed. 767.98 to
+   match Tailwind's md, which the cards inside this section key off. */
+@media (max-width: 767.98px) {
+  .sectionBlock {
+    padding: 22px 0;
+  }
+
+  .featuresGrid {
+    gap: 16px;
+  }
+
+  .featuresAside {
+    gap: 14px;
+  }
+
+  .featuresMain .sectionIntro {
+    margin-bottom: 12px;
+  }
+
+  .whoBlock {
+    margin-top: 24px;
+  }
+
+  .whoBlock .sectionIntro {
+    margin-bottom: 10px;
+  }
+}
+
 @media (min-width: 1024px) {
   .featuresGrid {
     grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);

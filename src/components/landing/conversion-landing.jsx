@@ -61,6 +61,7 @@ const bentoFeatures = (language) => [
     description: language === "id" ? "Hapus background dengan cepat dan siapkan produk untuk katalog, banner, atau desain baru." : "Remove backgrounds quickly and prepare products for catalogs, banners, or new designs.",
     icon: Eraser,
     image: "/images/showcase/watch-after3.jpg",
+    imagePosition: "object-[50%_20%] md:object-top",
     className: "md:col-span-2",
   },
   {
@@ -68,6 +69,7 @@ const bentoFeatures = (language) => [
     description: language === "id" ? "Perbaiki tone, warna, dan nuansa visual agar konten terlihat lebih profesional dan konsisten." : "Refine tone, color, and visual mood for more professional and consistent content.",
     icon: Palette,
     image: "/images/showcase/kopi-after4.jpg",
+    imagePosition: "object-[50%_20%] md:object-top",
     className: "md:col-span-2",
   },
   {
@@ -75,6 +77,7 @@ const bentoFeatures = (language) => [
     description: language === "id" ? "Buat portrait dengan gaya visual berbeda untuk campaign, personal branding, dan konten kreatif." : "Create portraits in different visual styles for campaigns, personal branding, and creative content.",
     icon: UserRound,
     image: "/images/showcase/Character_5.jpg",
+    imagePosition: "object-[50%_18%] md:object-top",
     className: "md:col-span-2 md:min-h-[220px]",
   },
   {
@@ -85,7 +88,7 @@ const bentoFeatures = (language) => [
     // tight headshot: 14% skips the empty band above the hair without reaching the
     // chin. object-bottom used to sit here, which only worked while the image
     // filled the whole card; against the real photo box it framed the chest.
-    imagePosition: "object-[50%_14%]",
+    imagePosition: "object-[50%_36%] md:object-[50%_14%]",
     href: "/signup",
     className: "md:col-span-2 md:min-h-[220px]",
   },
