@@ -17,7 +17,7 @@ const images = [
   ["/images/showcase/Character_1.jpg", "Portrait"],
   ["/images/showcase/kacang-after3.jpg", "Snack"],
   ["/images/showcase/watch-after2.jpg", "Watch"],
-  ["/images/showcase/powcan_tumbler.jpg", "Tumbler"],
+  ["/images/showcase/watch-after2.jpg", "Product"],
   ["/images/showcase/kopi-after3.jpg", "Coffee"],
   ["/images/showcase/snack-after1.jpg", "Food"],
   ["/images/showcase/Character_5.jpg", "Portrait"],
