@@ -17,7 +17,10 @@ const DEMO_CLIPS: DemoClip[] = [
     title: "Product Studio",
     duration: "00:18",
     src: "/videos/product_affiliate.mp4",
-    cover: "/images/showcase/powcan_tumbler.jpg",
+    // powcan_tumbler.jpg is 447x447 / 12KB and sat in a portrait card beside two
+    // 768x1376 photos, so it read as visibly soft. Same shot the Product Studio
+    // bento card uses, which keeps the feature looking like one thing.
+    cover: "/images/showcase/watch-after2.jpg",
   },
   {
     title: "Lifestyle Campaign",
