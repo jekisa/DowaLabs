@@ -15,7 +15,7 @@ import { trackMetaEventOnce } from "@/lib/facebookPixel";
 
 interface PaymentSettings {
   proPrice: number;
-  dokuConfigured: boolean;
+  duitkuConfigured: boolean;
   canvasLinks: CanvasLinks;
 }
 
@@ -154,7 +154,7 @@ export function PaymentScreen({
           <Button
             className="mt-4 w-full rounded-2xl"
             size="lg"
-            disabled={creatingDuitku || !settings.dokuConfigured}
+            disabled={creatingDuitku || !settings.duitkuConfigured}
             onClick={payWithDoku}
           >
             {creatingDuitku ? (
@@ -164,7 +164,7 @@ export function PaymentScreen({
             )}
             {creatingDuitku ? "Membuka Duitku..." : "Bayar via Duitku"}
           </Button>
-          {!settings.dokuConfigured && (
+          {!settings.duitkuConfigured && (
             <p className="mt-3 text-sm text-red-300">Duitku belum dikonfigurasi oleh admin.</p>
           )}
         </section>

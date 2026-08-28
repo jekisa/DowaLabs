@@ -76,7 +76,7 @@ export const updateSettingsSchema = z.object({
   proPrice: z.coerce.number().refine((value) => value === PRO_PRICE, "Harga Pro harus Rp99.000").optional(),
 });
 
-export const createManualInvoiceSchema = z.object({
+export const createPaymentInvoiceSchema = z.object({
   packageName: z.literal("pro").default("pro"),
 });
 

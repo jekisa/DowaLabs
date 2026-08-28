@@ -39,7 +39,7 @@ export default async function PaymentPage() {
         user={serializeUser(user)}
         settings={{
           proPrice: settings.proPrice,
-          dokuConfigured: isDuitkuConfigured(),
+          duitkuConfigured: isDuitkuConfigured(),
           canvasLinks,
         }}
         initialInvoices={invoices.map(serializePaymentInvoice)}

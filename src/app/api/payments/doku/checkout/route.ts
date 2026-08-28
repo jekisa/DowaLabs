@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { connectToDatabase } from "@/lib/mongodb";
 import { requireAuth } from "@/lib/server-auth";
 import { fail, ok, zodErrors } from "@/lib/api";
-import { createManualInvoiceSchema } from "@/lib/validators";
+import { createPaymentInvoiceSchema } from "@/lib/validators";
 import {
   createInvoiceNumber,
   invoiceExpiry,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     return fail("Body harus berupa JSON", 400);
   }
 
-  const parsed = createManualInvoiceSchema.safeParse(body);
+  const parsed = createPaymentInvoiceSchema.safeParse(body);
   if (!parsed.success) return fail("Data tidak valid", 422, zodErrors(parsed.error));
 
   if (!isDokuConfigured()) {

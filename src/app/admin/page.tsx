@@ -24,7 +24,7 @@ async function getStats() {
       User.countDocuments({ membershipStatus: "pending" }),
       User.countDocuments({ membershipStatus: "expired" }),
       User.countDocuments({ membershipStatus: "blocked" }),
-      PaymentLog.countDocuments({ provider: "doku" }),
+      PaymentLog.countDocuments({ provider: "duitku" }),
     ]);
   return { total, active, pending, expired, blocked, payments };
 }
@@ -35,7 +35,7 @@ export default async function AdminOverviewPage() {
   const primaryCards = [
     { label: "Total Users", value: stats.total, note: "Semua akun terdaftar", icon: Users, tone: "text-indigo-300 bg-indigo-400/10" },
     { label: "Active Members", value: stats.active, note: `${activeRate}% dari total user`, icon: UserCheck, tone: "text-emerald-300 bg-emerald-400/10" },
-    { label: "DOKU Logs", value: stats.payments, note: "Notifikasi pembayaran", icon: Receipt, tone: "text-cyan-300 bg-cyan-400/10" },
+    { label: "Duitku Logs", value: stats.payments, note: "Notifikasi pembayaran", icon: Receipt, tone: "text-cyan-300 bg-cyan-400/10" },
   ];
 
   return (
@@ -46,7 +46,7 @@ export default async function AdminOverviewPage() {
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-300">Control Center</p>
             <h1 className="mt-3 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">DowaLabs Admin Overview</h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">Pantau kesehatan membership, user, dan notifikasi pembayaran DOKU dari satu workspace yang terorganisir.</p>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">Pantau kesehatan membership, user, dan notifikasi pembayaran Duitku dari satu workspace yang terorganisir.</p>
           </div>
           <Link href="/admin/users" className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-amber-300 px-6 text-sm font-semibold text-black shadow-[0_14px_40px_rgba(245,185,66,0.2)] transition hover:-translate-y-0.5 hover:bg-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
             <UserCheck className="h-4 w-4" /> Kelola Users
@@ -84,7 +84,7 @@ export default async function AdminOverviewPage() {
           <h2 className="mt-2 text-xl font-semibold">Admin Shortcuts</h2>
           <div className="mt-5 space-y-2">
             <QuickLink href="/admin/users" label="Kelola Users" description="Status dan masa aktif" icon={Users} />
-            <QuickLink href="/payment" label="Tes Checkout" description="Buka flow DOKU" icon={CreditCard} />
+            <QuickLink href="/payment" label="Tes Checkout" description="Buka flow Duitku" icon={CreditCard} />
             <QuickLink href="/admin/settings" label="Application Settings" description="Harga dan Canvas" icon={Receipt} />
           </div>
         </section>
