@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles } from "lucide-react";
+import { ArrowLeft, Globe2, Sparkles } from "lucide-react";
 import { BRAND_NAME } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/lib/language";
 
 export default function AuthLayout({
   children,
@@ -13,7 +15,12 @@ export default function AuthLayout({
   const isAuthRedesign = ["/login", "/signup"].includes(usePathname());
 
   if (isAuthRedesign) {
-    return <div className="relative min-h-screen overflow-hidden bg-white px-3 py-3 sm:px-4 sm:py-4">{children}</div>;
+    return (
+      <div className="relative min-h-screen overflow-hidden bg-white px-6 py-4">
+        <AuthTopBar />
+        {children}
+      </div>
+    );
   }
 
   return (
@@ -32,6 +39,47 @@ export default function AuthLayout({
       </Link>
 
       <div className="relative w-full max-w-md">{children}</div>
+    </div>
+  );
+}
+
+/* Deliberately not the marketing <Navbar />: that one is a dark, full-width bar
+   with product links that pull attention off the form. This is the minimum a
+   signed-out visitor needs — a way back and a way to switch language. */
+function AuthTopBar() {
+  const { language, setLanguage } = useLanguage();
+
+  return (
+    <div className="mx-auto mb-3 flex w-full max-w-[1600px] items-center justify-between">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-slate-600 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {language === "id" ? "Kembali ke beranda" : "Back to home"}
+      </Link>
+
+      <div
+        className="flex items-center gap-1 rounded-[9px] border border-slate-200 bg-white px-1 py-1"
+        aria-label={language === "id" ? "Bahasa" : "Language"}
+      >
+        <Globe2 className="ml-2 h-[18px] w-[18px] text-slate-400" />
+        {(["id", "en"] as const).map((item) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => setLanguage(item)}
+            aria-label={item === "id" ? "Bahasa Indonesia" : "English"}
+            aria-pressed={language === item}
+            className={cn(
+              "rounded-md px-2.5 py-1.5 text-sm font-semibold text-slate-600 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400",
+              language === item && "bg-primary text-primary-foreground hover:text-primary-foreground"
+            )}
+          >
+            {item.toUpperCase()}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
