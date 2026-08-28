@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LocalizedTitle } from "@/components/localized-title";
 
 export const metadata: Metadata = { title: "Syarat & Ketentuan" };
 
@@ -19,5 +20,5 @@ const sections = [
 ] as const;
 
 export default function TermsPage() {
-  return <div className="container max-w-4xl py-16 sm:py-24"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">Legal</p><h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Syarat &amp; Ketentuan</h1><p className="mt-5 text-sm text-slate-400">Terakhir diperbarui: 27 Juli 2026</p><div className="mt-12 space-y-9 text-sm leading-7 text-slate-300">{sections.map(([title, text]) => <section key={title}><h2 className="text-lg font-semibold text-white">{title}</h2><p className="mt-2">{text}</p></section>)}</div></div>;
+  return <div className="container max-w-4xl py-16 sm:py-24"><LocalizedTitle id="Syarat & Ketentuan" en="Terms & Conditions" /><p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">Legal</p><h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">Syarat &amp; Ketentuan</h1><p className="mt-5 text-sm text-slate-400">Terakhir diperbarui: 27 Juli 2026</p><div className="mt-12 space-y-9 text-sm leading-7 text-slate-300">{sections.map(([title, text]) => <section key={title}><h2 className="text-lg font-semibold text-white">{title}</h2><p className="mt-2">{text}</p></section>)}</div></div>;
 }

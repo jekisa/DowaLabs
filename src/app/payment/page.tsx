@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { PaymentScreen } from "@/components/PaymentScreen";
+import { LocalizedTitle } from "@/components/localized-title";
 import { requireAuth } from "@/lib/auth";
 import { serializeUser } from "@/lib/serialize";
 import { getAppSettings } from "@/models/AppSettings";
@@ -33,6 +34,7 @@ export default async function PaymentPage() {
 
   return (
     <Suspense>
+      <LocalizedTitle id="Pembayaran" en="Payment" />
       <PaymentScreen
         user={serializeUser(user)}
         settings={{
